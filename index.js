@@ -36,7 +36,7 @@ class Sprite {
 
         //Draw the attack box
         c.fillStyle = 'purple';
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        c.fillRect(this.attackBox.position.x + 25, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
     }
 
     update() {
@@ -62,7 +62,6 @@ const player = new Sprite({
     velocity: {
         x: 0,
         y: 0.2
-
     },
 
     speed: 6,
@@ -125,6 +124,15 @@ function animate() {
     } else if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -enemy.speed;
     }
+
+    //Detect for collision
+    if (player.attackBox.position.x + player.attackBox.width >= enemy.position.x && 
+        player.attackBox.position.x + player.attackBox.width <= enemy.position.x + enemy.width &&
+        player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
+        player.attackBox.position.y + player.attackBox.height <= enemy.position.y + enemy.height ||
+        player.attackBox.position.x >= enemy.position.x && player.attackBox.position.x <= enemy.position.x + enemy.width) {
+        console.log("attack");
+    }
 }
 
 animate();
@@ -143,7 +151,6 @@ window.addEventListener('keydown', (event) => {
         case 'w':
             player.velocity.y = -17;
             break;
-
     }
 
     //Enemy keys
