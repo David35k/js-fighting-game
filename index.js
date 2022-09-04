@@ -14,20 +14,29 @@ const gravity = 0.7;
 
 //The sprite class which has all the sprite properties
 class Sprite {
-    constructor({ position, velocity, speed }) {
+    constructor({ position, velocity, speed, color }) {
         this.position = position;
         this.velocity = velocity;
         this.height = 150;
         this.width = 50;
         this.lastKey;
         this.speed = speed;
-        console.log(this.speed);
-        console.log(speed);
+        this.attackBox = {
+            position: this.position,
+            width: 100,
+            height: 50
+        }
+        this.color = color;
     }
 
     draw() {
-        c.fillStyle = 'red';
+        //Draw the players
+        c.fillStyle = this.color;
         c.fillRect(this.position.x, this.position.y, this.width, this.height);
+
+        //Draw the attack box
+        c.fillStyle = 'purple';
+        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
     }
 
     update() {
@@ -56,7 +65,8 @@ const player = new Sprite({
 
     },
 
-    speed: 6
+    speed: 6,
+    color: 'blue'
 })
 
 const enemy = new Sprite({
@@ -69,7 +79,8 @@ const enemy = new Sprite({
         y: 0.2
     },
 
-    speed: 6
+    speed: 6,
+    color: 'red'
 })
 
 const keys = {
