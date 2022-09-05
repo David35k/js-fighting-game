@@ -12,9 +12,6 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //Gravity constant
 const gravity = 0.7;
 
-//Last key
-let lastKey;
-
 //The sprite class which has all the sprite properties
 class Sprite {
     constructor({ position, velocity, speed, color }) {
@@ -28,7 +25,7 @@ class Sprite {
             position: this.position,
             width: 100,
             height: 50
-        }
+        };
         this.color = color;
         this.isAttacking = false;
     }
