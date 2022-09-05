@@ -12,6 +12,9 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //Gravity constant
 const gravity = 0.7;
 
+//Last key
+let lastKey;
+
 //The sprite class which has all the sprite properties
 class Sprite {
     constructor({ position, velocity, speed, color }) {
@@ -27,6 +30,7 @@ class Sprite {
             height: 50
         }
         this.color = color;
+        this.isAttacking = false;
     }
 
     draw() {
@@ -50,6 +54,13 @@ class Sprite {
         } else {
             this.velocity.y += gravity;
         }
+    }
+
+    attack() {
+        this.isAttacking = true;
+        setTimeout(() => {
+            this.isAttacking = false;
+        }, 100)
     }
 }
 
@@ -97,8 +108,6 @@ const keys = {
     }
 }
 
-let lastKey;
-
 //A loop that will run forever and animate the canvas
 function animate() {
     window.requestAnimationFrame(animate);
@@ -125,13 +134,23 @@ function animate() {
         enemy.velocity.x = -enemy.speed;
     }
 
-    //Detect for collision
-    if (player.attackBox.position.x + player.attackBox.width >= enemy.position.x && 
+    //Detect for collision player
+    if (player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
         player.attackBox.position.x + player.attackBox.width <= enemy.position.x + enemy.width &&
         player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-        player.attackBox.position.y + player.attackBox.height <= enemy.position.y + enemy.height ||
-        player.attackBox.position.x >= enemy.position.x && player.attackBox.position.x <= enemy.position.x + enemy.width) {
-        console.log("attack");
+        player.attackBox.position.y + player.attackBox.height <= enemy.position.y + enemy.height &&
+        player.isAttacking) {
+
+        player.isAttacking = false;
+        console.log("attack on enemy");
+    }
+
+    //Detect for collision enenmy
+    if (enemy.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
+        enemy.attackBox.position.x + player.attackBox.width <= enemy.position.x + enemy.width &&
+        enemy.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
+        enemy.attackBox.position.y + enemy.attackBox.height <= enemy.position.y + enemy.height) {
+        console.log("attack on player");
     }
 }
 
@@ -150,6 +169,9 @@ window.addEventListener('keydown', (event) => {
             break;
         case 'w':
             player.velocity.y = -17;
+            break;
+        case 'j':
+            player.attack();
             break;
     }
 
