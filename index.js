@@ -14,15 +14,19 @@ const gravity = 0.7;
 
 //The sprite class which has all the sprite properties
 class Sprite {
-    constructor({ position, velocity, speed, color }) {
+    constructor({ position, velocity, speed, color, offset }) {
         this.position = position;
         this.velocity = velocity;
         this.height = 150;
         this.width = 50;
-        this.lastKey;
+        this.lastKey = '';
         this.speed = speed;
         this.attackBox = {
-            position: this.position,
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            offset,
             width: 100,
             height: 50
         };
@@ -35,13 +39,19 @@ class Sprite {
         c.fillStyle = this.color;
         c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
+
         //Draw the attack box
-        c.fillStyle = 'purple';
-        c.fillRect(this.attackBox.position.x + 25, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        if (this.isAttacking) {
+            c.fillStyle = 'purple';
+            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        }
     }
 
     update() {
         this.draw();
+
+        this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
+        this.attackBox.position.y = this.position.y;
 
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
@@ -57,7 +67,7 @@ class Sprite {
         this.isAttacking = true;
         setTimeout(() => {
             this.isAttacking = false;
-        }, 100)
+        }, 100);
     }
 }
 
@@ -73,8 +83,12 @@ const player = new Sprite({
     },
 
     speed: 6,
-    color: 'blue'
-})
+    color: 'blue',
+    offset: {
+        x: 0,
+        y: 0
+    }
+});
 
 const enemy = new Sprite({
     position: {
@@ -87,8 +101,22 @@ const enemy = new Sprite({
     },
 
     speed: 6,
-    color: 'red'
-})
+    color: 'red',
+    offset: {
+        x: 50,
+        y: 0
+    }
+});
+
+function attackCollision({ rectangle1, rectangle2 }) {
+    return (
+        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
+        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
+        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
+    );
+
+}
 
 const keys = {
     a: {
@@ -103,7 +131,7 @@ const keys = {
     ArrowRight: {
         pressed: false
     }
-}
+};
 
 //A loop that will run forever and animate the canvas
 function animate() {
@@ -132,21 +160,17 @@ function animate() {
     }
 
     //Detect for collision player
-    if (player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-        player.attackBox.position.x + player.attackBox.width <= enemy.position.x + enemy.width &&
-        player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-        player.attackBox.position.y + player.attackBox.height <= enemy.position.y + enemy.height &&
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }) &&
         player.isAttacking) {
 
         player.isAttacking = false;
         console.log("attack on enemy");
     }
+    //Detect for collision enemy
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }) &&
+        enemy.isAttacking) {
 
-    //Detect for collision enenmy
-    if (enemy.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-        enemy.attackBox.position.x + player.attackBox.width <= enemy.position.x + enemy.width &&
-        enemy.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-        enemy.attackBox.position.y + enemy.attackBox.height <= enemy.position.y + enemy.height) {
+        enemy.isAttacking = false;
         console.log("attack on player");
     }
 }
@@ -154,6 +178,9 @@ function animate() {
 animate();
 
 window.addEventListener('keydown', (event) => {
+
+    //console.log(event.key + ", " + event.code);
+
     //Player keys
     switch (event.key) {
         case 'd':
@@ -186,7 +213,14 @@ window.addEventListener('keydown', (event) => {
             enemy.velocity.y = -17;
             break;
     }
-})
+
+    //Enemy attacks are on numpad so it should use code so it can be used with or without numlock
+    switch (event.code) {
+        case 'Numpad1':
+            enemy.attack();
+            break;
+    }
+});
 
 window.addEventListener('keyup', (event) => {
     //Player keys
@@ -208,4 +242,4 @@ window.addEventListener('keyup', (event) => {
             keys.ArrowRight.pressed = false;
             break;
     }
-})
+});
