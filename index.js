@@ -32,9 +32,18 @@ class Sprite {
         };
         this.color = color;
         this.isAttacking = false;
+        this.attackCircle = {
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            radius: 35
+        };
+        this.isAttackingRange = false;
     }
 
     draw() {
+
         //Draw the players
         c.fillStyle = this.color;
         c.fillRect(this.position.x, this.position.y, this.width, this.height);
@@ -45,13 +54,23 @@ class Sprite {
             c.fillStyle = 'purple';
             c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
         }
+
+        if (this.isAttackingRange) {
+            c.fillStyle = 'green';
+            c.arc(this.attackCircle.position.x, this.attackCircle.position.y, this.attackCircle.radius, 0, 2 * Math.PI, false);
+            c.fill();
+        }
     }
 
     update() {
+
         this.draw();
 
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
+
+        this.attackCircle.position.x = this.position.x;
+        this.attackCircle.position.y = this.position.y;
 
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
@@ -61,6 +80,7 @@ class Sprite {
         } else {
             this.velocity.y += gravity;
         }
+
     }
 
     attack() {
@@ -68,6 +88,13 @@ class Sprite {
         setTimeout(() => {
             this.isAttacking = false;
         }, 100);
+    }
+
+    attackRange() {
+        this.isAttackingRange = true;
+        setTimeout(() => {
+            this.isAttackingRange = false;
+        }, 750);
     }
 }
 
@@ -196,6 +223,9 @@ window.addEventListener('keydown', (event) => {
             break;
         case 'j':
             player.attack();
+            break;
+        case 'k':
+            player.attackRange();
             break;
     }
 
