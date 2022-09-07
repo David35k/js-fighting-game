@@ -12,6 +12,9 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //Gravity constant
 const gravity = 0.7;
 
+//Jump limit
+const jumpLimitGlobal = 2;
+
 //The sprite class which has all the sprite properties
 class Sprite {
     constructor({ position, velocity, speed, color, offset, rangeSpeed }) {
@@ -42,6 +45,9 @@ class Sprite {
             offset: 25
         };
         this.isAttackingRange = false;
+        this.rangeAttackRecharge = false;
+        this.rechargeTime = 3000;
+        this.jumpLimit = jumpLimitGlobal;
     }
 
     draw() {
@@ -90,6 +96,7 @@ class Sprite {
 
         if (this.position.y + this.height + this.velocity.y >= canvas.height) {
             this.velocity.y = 0;
+            this.jumpLimit = jumpLimitGlobal;
         } else {
             this.velocity.y += gravity;
         }
@@ -104,7 +111,21 @@ class Sprite {
     }
 
     attackRange() {
-        this.isAttackingRange = true;
+        if (!this.isAttackingRange && !this.rangeAttackRecharge) {
+            this.isAttackingRange = true;
+            this.rangeAttackRecharge = true;
+            setTimeout(() => {
+                this.rangeAttackRecharge = false;
+            }, this.rechargeTime)
+        }
+
+    }
+
+    jump() {
+        if (this.jumpLimit > 0) {
+            this.velocity.y = -17;
+            this.jumpLimit--;
+        }
     }
 }
 
@@ -256,15 +277,13 @@ window.addEventListener('keydown', (event) => {
             player.lastKey = 'a';
             break;
         case 'w':
-            player.velocity.y = -17;
+            player.jump();
             break;
         case 'j':
             player.attack();
             break;
         case 'k':
-            if (!player.isAttackingRange) {
-                player.attackRange();
-            }
+            player.attackRange();
             break;
     }
 
@@ -279,7 +298,7 @@ window.addEventListener('keydown', (event) => {
             enemy.lastKey = 'ArrowRight';
             break;
         case 'ArrowUp':
-            enemy.velocity.y = -17;
+            enemy.jump();
             break;
     }
 
