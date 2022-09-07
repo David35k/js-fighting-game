@@ -32,12 +32,14 @@ class Sprite {
         };
         this.color = color;
         this.isAttacking = false;
-        this.attackCircle = {
+        this.attackBoxRange = {
             position: {
                 x: this.position.x,
                 y: this.position.y
             },
-            radius: 35
+            size: 50,
+            speed: 7,
+            offset: 25
         };
         this.isAttackingRange = false;
     }
@@ -57,20 +59,26 @@ class Sprite {
 
         if (this.isAttackingRange) {
             c.fillStyle = 'green';
-            c.arc(this.attackCircle.position.x, this.attackCircle.position.y, this.attackCircle.radius, 0, 2 * Math.PI, false);
-            c.fill();
+            c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+
         }
+
     }
 
     update() {
 
+        console.log("updating");
         this.draw();
 
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
 
-        this.attackCircle.position.x = this.position.x;
-        this.attackCircle.position.y = this.position.y;
+        if (!this.isAttackingRange) {
+            this.attackBoxRange.position.x = this.position.x;
+            this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset;
+        } else if (this.isAttackingRange) {
+            this.attackBoxRange.position.x += this.attackBoxRange.speed;
+        }
 
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
@@ -225,7 +233,9 @@ window.addEventListener('keydown', (event) => {
             player.attack();
             break;
         case 'k':
-            player.attackRange();
+            if (!player.isAttackingRange) {
+                player.attackRange();
+            }
             break;
     }
 
