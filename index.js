@@ -14,7 +14,7 @@ const gravity = 0.7;
 
 //The sprite class which has all the sprite properties
 class Sprite {
-    constructor({ position, velocity, speed, color, offset }) {
+    constructor({ position, velocity, speed, color, offset, rangeSpeed }) {
         this.position = position;
         this.velocity = velocity;
         this.height = 150;
@@ -38,7 +38,7 @@ class Sprite {
                 y: this.position.y
             },
             size: 50,
-            speed: 7,
+            speed: rangeSpeed,
             offset: 25
         };
         this.isAttackingRange = false;
@@ -58,7 +58,7 @@ class Sprite {
         }
 
         if (this.isAttackingRange) {
-            c.fillStyle = 'green';
+            c.fillStyle = 'orange';
             c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
         }
@@ -67,7 +67,6 @@ class Sprite {
 
     update() {
 
-        console.log("updating");
         this.draw();
 
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
@@ -78,6 +77,12 @@ class Sprite {
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset;
         } else if (this.isAttackingRange) {
             this.attackBoxRange.position.x += this.attackBoxRange.speed;
+
+        }
+
+        if (this.attackBoxRange.position.x + this.attackBoxRange.size >= canvas.width ||
+            this.attackBoxRange.position.x <= 0) {
+            this.isAttackingRange = false;
         }
 
         this.position.y += this.velocity.y;
@@ -100,9 +105,6 @@ class Sprite {
 
     attackRange() {
         this.isAttackingRange = true;
-        setTimeout(() => {
-            this.isAttackingRange = false;
-        }, 750);
     }
 }
 
@@ -122,7 +124,8 @@ const player = new Sprite({
     offset: {
         x: 0,
         y: 0
-    }
+    },
+    rangeSpeed: 7
 });
 
 const enemy = new Sprite({
@@ -140,17 +143,26 @@ const enemy = new Sprite({
     offset: {
         x: 50,
         y: 0
-    }
+    },
+    rangeSpeed: -7
 });
 
-function attackCollision({ rectangle1, rectangle2 }) {
-    return (
-        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
-        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
-        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
-        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-    );
-
+function attackCollision({ rectangle1, rectangle2 }, type) {
+    if (type === 'short') {
+        return (
+            rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
+            rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
+            rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+            rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
+        );
+    } else if (type === 'long') {
+        return (
+            rectangle1.attackBoxRange.position.x + rectangle1.attackBoxRange.size >= rectangle2.position.x &&
+            rectangle1.attackBoxRange.position.x <= rectangle2.position.x + rectangle2.width &&
+            rectangle1.attackBoxRange.position.y + rectangle1.attackBoxRange.size >= rectangle2.position.y &&
+            rectangle1.attackBoxRange.position.y <= rectangle2.position.y + rectangle2.height
+        );
+    }
 }
 
 const keys = {
@@ -194,18 +206,35 @@ function animate() {
         enemy.velocity.x = -enemy.speed;
     }
 
-    //Detect for collision player
-    if (attackCollision({ rectangle1: player, rectangle2: enemy }) &&
+    //Detect for short range collision player
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, 'short') &&
         player.isAttacking) {
 
         player.isAttacking = false;
         console.log("attack on enemy");
     }
-    //Detect for collision enemy
-    if (attackCollision({ rectangle1: enemy, rectangle2: player }) &&
+
+    //Detect for long range collision player
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, 'long') &&
+        player.isAttackingRange) {
+
+        player.isAttackingRange = false;
+        console.log("attack on enemy");
+    }
+
+    //Detect for short range collision enemy
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, 'short') &&
         enemy.isAttacking) {
 
         enemy.isAttacking = false;
+        console.log("attack on player");
+    }
+
+    //Detect for long range collision enemy
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, 'long') &&
+        enemy.isAttackingRange) {
+
+        enemy.isAttackingRange = false;
         console.log("attack on player");
     }
 }
@@ -258,6 +287,9 @@ window.addEventListener('keydown', (event) => {
     switch (event.code) {
         case 'Numpad1':
             enemy.attack();
+            break;
+        case 'Numpad2':
+            enemy.attackRange();
             break;
     }
 });
