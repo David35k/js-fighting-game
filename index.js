@@ -26,7 +26,7 @@ class Sprite {
         this.velocity = velocity;
         this.height = 150;
         this.width = 50;
-        this.lastKey = '';
+        this.lastKey = "";
         this.speed = speed;
         this.attackBox = {
             position: {
@@ -53,6 +53,8 @@ class Sprite {
         this.rechargeTime = 3000;
         this.jumpLimit = jumpLimitGlobal;
         this.health = 100;
+        this.isDefending = false;
+        this.direction = "";
     }
 
     draw() {
@@ -80,12 +82,25 @@ class Sprite {
 
         this.draw();
 
+        if (this.direction == "right") {
+            this.attackBox.offset.x = 0;
+        } else if (this.direction == "left") {
+            this.attackBox.offset.x = 50;
+        }
+
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
 
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x;
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset;
+
+            if (this.direction == "right") {
+                this.attackBoxRange.speed = 7;
+            } else if (this.direction == "left") {
+                this.attackBoxRange.speed = -7;
+            }
+
         } else if (this.isAttackingRange) {
             this.attackBoxRange.position.x += this.attackBoxRange.speed;
 
@@ -221,15 +236,19 @@ function animate() {
     //Player movement
     if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = player.speed;
+        player.direction = "right";
     } else if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -player.speed;
+        player.direction = "left";
     }
 
     //Enemy movement
     if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = enemy.speed;
+        enemy.direction = "right";
     } else if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -enemy.speed;
+        enemy.direction = "left";
     }
 
     //Detect for short range collision player
@@ -271,6 +290,7 @@ function animate() {
         playerHealthDisplay.style.width = player.health + "%";
         console.log("player health: " + player.health);
     }
+
 }
 
 animate();
