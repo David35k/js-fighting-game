@@ -15,6 +15,10 @@ const gravity = 0.7;
 //Jump limit
 const jumpLimitGlobal = 2;
 
+//Get the enemy and player health display
+const playerHealthDisplay = document.querySelector("#playerHealth");
+const enemyHealthDisplay = document.querySelector("#enemyHealth");
+
 //The sprite class which has all the sprite properties
 class Sprite {
     constructor({ position, velocity, speed, color, offset, rangeSpeed }) {
@@ -48,6 +52,7 @@ class Sprite {
         this.rangeAttackRecharge = false;
         this.rechargeTime = 3000;
         this.jumpLimit = jumpLimitGlobal;
+        this.health = 100;
     }
 
     draw() {
@@ -232,7 +237,9 @@ function animate() {
         player.isAttacking) {
 
         player.isAttacking = false;
-        console.log("attack on enemy");
+        enemy.health -= 10;
+        enemyHealthDisplay.style.width = enemy.health + "%";
+        console.log("enemy health: " + enemy.health);
     }
 
     //Detect for long range collision player
@@ -240,7 +247,9 @@ function animate() {
         player.isAttackingRange) {
 
         player.isAttackingRange = false;
-        console.log("attack on enemy");
+        enemy.health -= 20;
+        enemyHealthDisplay.style.width = enemy.health + "%";
+        console.log("enemy health: " + enemy.health);
     }
 
     //Detect for short range collision enemy
@@ -248,7 +257,9 @@ function animate() {
         enemy.isAttacking) {
 
         enemy.isAttacking = false;
-        console.log("attack on player");
+        player.health -= 10;
+        playerHealthDisplay.style.width = player.health + "%";
+        console.log("player health: " + player.health);
     }
 
     //Detect for long range collision enemy
@@ -256,7 +267,9 @@ function animate() {
         enemy.isAttackingRange) {
 
         enemy.isAttackingRange = false;
-        console.log("attack on player");
+        player.health -= 20;
+        playerHealthDisplay.style.width = player.health + "%";
+        console.log("player health: " + player.health);
     }
 }
 

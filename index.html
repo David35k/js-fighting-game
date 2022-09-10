@@ -6,11 +6,19 @@
     <div class="containerRelative">
         <div class="containerAbsolute">
             <!-- Player Health -->
-            <div class="playerHealth"></div>
+            <div class="healthParentPlayer">
+                <div class="healthPlayer" id="playerHealth"></div>
+                <div class="healthBgPlayer"></div>
+            </div>
+
             <!-- Timer -->
             <div class="timer"></div>
+
             <!-- Enemy Health -->
-            <div class="enemyHealth"></div>
+            <div class="healthParent">
+                <div class="health" id="enemyHealth"></div>
+                <div class="healthBg"></div>
+            </div>
         </div>
         <canvas></canvas>
     </div>
