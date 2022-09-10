@@ -1,6 +1,6 @@
 //Get the canvas and the canvas context
-const canvas = document.querySelector('canvas');
-const c = canvas.getContext('2d');
+const canvas = document.querySelector("canvas");
+const c = canvas.getContext("2d");
 
 //Set the width and height to something good for a game and most devices
 canvas.width = 1024;
@@ -21,7 +21,7 @@ const enemyHealthDisplay = document.querySelector("#enemyHealth");
 
 //The sprite class which has all the sprite properties
 class Sprite {
-    constructor({ position, velocity, speed, color, offset, rangeSpeed }) {
+    constructor({ position, velocity, speed, color, offset, rangeSpeed, direction }) {
         this.position = position;
         this.velocity = velocity;
         this.height = 150;
@@ -53,8 +53,8 @@ class Sprite {
         this.rechargeTime = 3000;
         this.jumpLimit = jumpLimitGlobal;
         this.health = 100;
-        this.isDefending = false;
-        this.direction = "";
+        this.isBlocking = false;
+        this.direction = direction;
     }
 
     draw() {
@@ -66,12 +66,12 @@ class Sprite {
 
         //Draw the attack box
         if (this.isAttacking) {
-            c.fillStyle = 'purple';
+            c.fillStyle = "purple";
             c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
         }
 
         if (this.isAttackingRange) {
-            c.fillStyle = 'orange';
+            c.fillStyle = "orange";
             c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
         }
@@ -147,6 +147,10 @@ class Sprite {
             this.jumpLimit--;
         }
     }
+
+    block() {
+        this.isBlocking = true;
+    }
 }
 
 //Make the player and the enemy
@@ -161,12 +165,13 @@ const player = new Sprite({
     },
 
     speed: 6,
-    color: 'blue',
+    color: "blue",
     offset: {
         x: 0,
         y: 0
     },
-    rangeSpeed: 7
+    rangeSpeed: 7,
+    direction: "right"
 });
 
 const enemy = new Sprite({
@@ -180,23 +185,25 @@ const enemy = new Sprite({
     },
 
     speed: 6,
-    color: 'red',
+    color: "red",
     offset: {
         x: 50,
         y: 0
     },
-    rangeSpeed: -7
+    rangeSpeed: -7,
+    direction: "left"
+
 });
 
 function attackCollision({ rectangle1, rectangle2 }, type) {
-    if (type === 'short') {
+    if (type === "short") {
         return (
             rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
             rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
             rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
             rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
         );
-    } else if (type === 'long') {
+    } else if (type === "long") {
         return (
             rectangle1.attackBoxRange.position.x + rectangle1.attackBoxRange.size >= rectangle2.position.x &&
             rectangle1.attackBoxRange.position.x <= rectangle2.position.x + rectangle2.width &&
@@ -221,6 +228,15 @@ const keys = {
     }
 };
 
+function isBlocked(attacker, blocker) {
+    if (attacker.direction == "right" && blocker.direction == "right" && blocker.isBlocking ||
+        attacker.direction == "left" && blocker.direction == "left" && blocker.isBlocking) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 //A loop that will run forever and animate the canvas
 function animate() {
     window.requestAnimationFrame(animate);
@@ -234,136 +250,165 @@ function animate() {
     enemy.velocity.x = 0;
 
     //Player movement
-    if (keys.d.pressed && player.lastKey === 'd') {
+    if (keys.d.pressed && player.lastKey === "d") {
         player.velocity.x = player.speed;
         player.direction = "right";
-    } else if (keys.a.pressed && player.lastKey === 'a') {
+    } else if (keys.a.pressed && player.lastKey === "a") {
         player.velocity.x = -player.speed;
         player.direction = "left";
     }
 
     //Enemy movement
-    if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
+    if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
         enemy.velocity.x = enemy.speed;
         enemy.direction = "right";
-    } else if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
+    } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
         enemy.velocity.x = -enemy.speed;
         enemy.direction = "left";
     }
 
     //Detect for short range collision player
-    if (attackCollision({ rectangle1: player, rectangle2: enemy }, 'short') &&
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
         player.isAttacking) {
 
         player.isAttacking = false;
-        enemy.health -= 10;
-        enemyHealthDisplay.style.width = enemy.health + "%";
-        console.log("enemy health: " + enemy.health);
+        if (!isBlocked(player, enemy)) {
+            enemy.health -= 10;
+            enemyHealthDisplay.style.width = enemy.health + "%";
+            console.log("enemy health: " + enemy.health);
+        } else {
+            console.log("blocked!");
+        }
+
     }
 
     //Detect for long range collision player
-    if (attackCollision({ rectangle1: player, rectangle2: enemy }, 'long') &&
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "long") &&
         player.isAttackingRange) {
 
         player.isAttackingRange = false;
-        enemy.health -= 20;
-        enemyHealthDisplay.style.width = enemy.health + "%";
-        console.log("enemy health: " + enemy.health);
+        if (!isBlocked(player, enemy)) {
+            enemy.health -= 20;
+            enemyHealthDisplay.style.width = enemy.health + "%";
+            console.log("enemy health: " + enemy.health);
+        } else {
+            console.log("blocked!");
+        }
     }
 
     //Detect for short range collision enemy
-    if (attackCollision({ rectangle1: enemy, rectangle2: player }, 'short') &&
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "short") &&
         enemy.isAttacking) {
 
         enemy.isAttacking = false;
-        player.health -= 10;
-        playerHealthDisplay.style.width = player.health + "%";
-        console.log("player health: " + player.health);
+        if (!isBlocked(enemy, player)) {
+            player.health -= 10;
+            playerHealthDisplay.style.width = player.health + "%";
+            console.log("player health: " + player.health);
+        } else {
+            console.log("blocked!");
+        }
     }
 
     //Detect for long range collision enemy
-    if (attackCollision({ rectangle1: enemy, rectangle2: player }, 'long') &&
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "long") &&
         enemy.isAttackingRange) {
 
         enemy.isAttackingRange = false;
-        player.health -= 20;
-        playerHealthDisplay.style.width = player.health + "%";
-        console.log("player health: " + player.health);
+        if (!isBlocked(enemy, player)) {
+            player.health -= 20;
+            playerHealthDisplay.style.width = player.health + "%";
+            console.log("player health: " + player.health);
+        } else {
+            console.log("blocked!");
+        }
     }
 
 }
 
 animate();
 
-window.addEventListener('keydown', (event) => {
+window.addEventListener("keydown", (event) => {
 
     //console.log(event.key + ", " + event.code);
 
     //Player keys
     switch (event.key) {
-        case 'd':
+        case "d":
             keys.d.pressed = true;
-            player.lastKey = 'd';
+            player.lastKey = "d";
             break;
-        case 'a':
+        case "a":
             keys.a.pressed = true;
-            player.lastKey = 'a';
+            player.lastKey = "a";
             break;
-        case 'w':
+        case "w":
             player.jump();
             break;
-        case 'j':
+        case "j":
             player.attack();
             break;
-        case 'k':
+        case "k":
             player.attackRange();
+            break;
+        case "l":
+            player.block();
             break;
     }
 
     //Enemy keys
     switch (event.key) {
-        case 'ArrowLeft':
+        case "ArrowLeft":
             keys.ArrowLeft.pressed = true;
-            enemy.lastKey = 'ArrowLeft';
+            enemy.lastKey = "ArrowLeft";
             break;
-        case 'ArrowRight':
+        case "ArrowRight":
             keys.ArrowRight.pressed = true;
-            enemy.lastKey = 'ArrowRight';
+            enemy.lastKey = "ArrowRight";
             break;
-        case 'ArrowUp':
+        case "ArrowUp":
             enemy.jump();
             break;
     }
 
     //Enemy attacks are on numpad so it should use code so it can be used with or without numlock
     switch (event.code) {
-        case 'Numpad1':
+        case "Numpad1":
             enemy.attack();
             break;
-        case 'Numpad2':
+        case "Numpad2":
             enemy.attackRange();
+            break;
+        case "Numpad3":
+            enemy.block();
             break;
     }
 });
 
-window.addEventListener('keyup', (event) => {
+window.addEventListener("keyup", (event) => {
     //Player keys
     switch (event.key) {
-        case 'd':
+        case "d":
             keys.d.pressed = false;
             break;
-        case 'a':
+        case "a":
             keys.a.pressed = false;
             break;
     }
 
     //Enemy keys
     switch (event.key) {
-        case 'ArrowLeft':
+        case "ArrowLeft":
             keys.ArrowLeft.pressed = false;
             break;
-        case 'ArrowRight':
+        case "ArrowRight":
             keys.ArrowRight.pressed = false;
+            break;
+    }
+
+    switch (event.code) {
+        case "Numpad3":
+            enemy.isBlocking = false;
             break;
     }
 });
