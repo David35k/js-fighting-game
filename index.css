@@ -9,6 +9,9 @@
 }
 
 .timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: red;
     width: 100px;
     height: 100px;
@@ -71,4 +74,20 @@
     width: 100%;
     align-items: center;
     padding: 20px;
+}
+
+.gameEndTextDiv {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#gameEndText {
+    display: none;
+    color: white;
 }

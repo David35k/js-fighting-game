@@ -19,6 +19,14 @@ const jumpLimitGlobal = 2;
 const playerHealthDisplay = document.querySelector("#playerHealth");
 const enemyHealthDisplay = document.querySelector("#enemyHealth");
 
+let timer = 60; //Length of game in seconds
+const timeText = document.querySelector("#timeText");
+
+//Text which tells us the outcome of the game
+const gameEndText = document.querySelector("#gameEndText");
+
+let gameOver = false;
+
 //The sprite class which has all the sprite properties
 class Sprite {
     constructor({ position, velocity, speed, color, offset, rangeSpeed, direction }) {
@@ -46,7 +54,10 @@ class Sprite {
             },
             size: 50,
             speed: rangeSpeed,
-            offset: 25
+            offset: {
+                x: 50,
+                y: 25
+            }
         };
         this.isAttackingRange = false;
         this.rangeAttackRecharge = false;
@@ -84,16 +95,18 @@ class Sprite {
 
         if (this.direction == "right") {
             this.attackBox.offset.x = 0;
+            this.attackBoxRange.offset.x = 60;
         } else if (this.direction == "left") {
             this.attackBox.offset.x = 50;
+            this.attackBoxRange.offset.x = -60;
         }
 
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
 
         if (!this.isAttackingRange) {
-            this.attackBoxRange.position.x = this.position.x;
-            this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset;
+            this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
+            this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
 
             if (this.direction == "right") {
                 this.attackBoxRange.speed = 7;
@@ -242,6 +255,43 @@ function isBlocked(attacker, blocker) {
     }
 }
 
+function whoWins({ player, enemy, timerId }) {
+    //clearTimeout(timerId);
+
+    gameEndText.style.display = "block";
+
+    if (player.health === enemy.health) {
+        gameEndText.innerHTML = "Tie";
+    } else if (player.health > enemy.health) {
+        gameEndText.innerHTML = "Player 1 wins";
+    } else if (player.health < enemy.health) {
+        gameEndText.innerHTML = "Player 2 wins";
+    }
+
+    gameOver = true;
+}
+
+let timerId;
+
+//Changing the timer
+function decreaseTimer() {
+    if (!gameOver) {
+        if (timer > 0) {
+            timerId = setTimeout(decreaseTimer, 1000);
+            timer--;
+            timeText.innerHTML = timer;
+        }
+
+        //End game based on time. Whoever has more health wins
+        if (timer === 0) {
+            whoWins({ player, enemy });
+        }
+    }
+
+}
+
+decreaseTimer();
+
 //A loop that will run forever and animate the canvas
 function animate() {
     window.requestAnimationFrame(animate);
@@ -254,81 +304,88 @@ function animate() {
     player.velocity.x = 0;
     enemy.velocity.x = 0;
 
-    //Player movement
-    if (keys.d.pressed && player.lastKey === "d") {
-        player.velocity.x = player.speed;
-        player.direction = "right";
-    } else if (keys.a.pressed && player.lastKey === "a") {
-        player.velocity.x = -player.speed;
-        player.direction = "left";
-    }
-
-    //Enemy movement
-    if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
-        enemy.velocity.x = enemy.speed;
-        enemy.direction = "right";
-    } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
-        enemy.velocity.x = -enemy.speed;
-        enemy.direction = "left";
-    }
-
-    //Detect for short range collision player
-    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
-        player.isAttacking) {
-
-        player.isAttacking = false;
-        if (!isBlocked(player, enemy)) {
-            enemy.health -= 10;
-            enemyHealthDisplay.style.width = enemy.health + "%";
-            console.log("enemy health: " + enemy.health);
-        } else {
-            console.log("blocked!");
+    //Only do this stuff if the game is not over
+    if (!gameOver) {
+        //Player movement
+        if (keys.d.pressed && player.lastKey === "d") {
+            player.velocity.x = player.speed;
+            player.direction = "right";
+        } else if (keys.a.pressed && player.lastKey === "a") {
+            player.velocity.x = -player.speed;
+            player.direction = "left";
         }
 
-    }
+        //Enemy movement
+        if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
+            enemy.velocity.x = enemy.speed;
+            enemy.direction = "right";
+        } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
+            enemy.velocity.x = -enemy.speed;
+            enemy.direction = "left";
+        }
 
-    //Detect for long range collision player
-    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "long") &&
-        player.isAttackingRange) {
+        //Detect for short range collision player
+        if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
+            player.isAttacking) {
 
-        player.isAttackingRange = false;
-        if (!isBlocked(player, enemy)) {
-            enemy.health -= 20;
-            enemyHealthDisplay.style.width = enemy.health + "%";
-            console.log("enemy health: " + enemy.health);
-        } else {
-            console.log("blocked!");
+            player.isAttacking = false;
+            if (!isBlocked(player, enemy)) {
+                enemy.health -= 10;
+                enemyHealthDisplay.style.width = enemy.health + "%";
+                console.log("enemy health: " + enemy.health);
+            } else {
+                console.log("blocked!");
+            }
+
+        }
+
+        //Detect for long range collision player
+        if (attackCollision({ rectangle1: player, rectangle2: enemy }, "long") &&
+            player.isAttackingRange) {
+
+            player.isAttackingRange = false;
+            if (!isBlocked(player, enemy)) {
+                enemy.health -= 20;
+                enemyHealthDisplay.style.width = enemy.health + "%";
+                console.log("enemy health: " + enemy.health);
+            } else {
+                console.log("blocked!");
+            }
+        }
+
+        //Detect for short range collision enemy
+        if (attackCollision({ rectangle1: enemy, rectangle2: player }, "short") &&
+            enemy.isAttacking) {
+
+            enemy.isAttacking = false;
+            if (!isBlocked(enemy, player)) {
+                player.health -= 10;
+                playerHealthDisplay.style.width = player.health + "%";
+                console.log("player health: " + player.health);
+            } else {
+                console.log("blocked!");
+            }
+        }
+
+        //Detect for long range collision enemy
+        if (attackCollision({ rectangle1: enemy, rectangle2: player }, "long") &&
+            enemy.isAttackingRange) {
+
+            enemy.isAttackingRange = false;
+            if (!isBlocked(enemy, player)) {
+                player.health -= 20;
+                playerHealthDisplay.style.width = player.health + "%";
+                console.log("player health: " + player.health);
+            } else {
+                console.log("blocked!");
+            }
+        }
+
+        //End game when health of one of the players reaches 0
+        if (player.health <= 0 || enemy.health <= 0) {
+            whoWins({ player, enemy, timerId });
         }
     }
-
-    //Detect for short range collision enemy
-    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "short") &&
-        enemy.isAttacking) {
-
-        enemy.isAttacking = false;
-        if (!isBlocked(enemy, player)) {
-            player.health -= 10;
-            playerHealthDisplay.style.width = player.health + "%";
-            console.log("player health: " + player.health);
-        } else {
-            console.log("blocked!");
-        }
-    }
-
-    //Detect for long range collision enemy
-    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "long") &&
-        enemy.isAttackingRange) {
-
-        enemy.isAttackingRange = false;
-        if (!isBlocked(enemy, player)) {
-            player.health -= 20;
-            playerHealthDisplay.style.width = player.health + "%";
-            console.log("player health: " + player.health);
-        } else {
-            console.log("blocked!");
-        }
-    }
-
 }
 
 animate();
