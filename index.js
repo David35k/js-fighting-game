@@ -111,8 +111,13 @@ class Sprite {
             this.isAttackingRange = false;
         }
 
-        this.position.y += this.velocity.y;
-        this.position.x += this.velocity.x;
+        if (!this.isBlocking) {
+            this.position.y += this.velocity.y;
+            this.position.x += this.velocity.x;
+        } else {
+            this.position.y += this.velocity.y;
+            this.position.x += this.velocity.x / 2;
+        }
 
         if (this.position.y + this.height + this.velocity.y >= canvas.height) {
             this.velocity.y = 0;
@@ -393,6 +398,9 @@ window.addEventListener("keyup", (event) => {
             break;
         case "a":
             keys.a.pressed = false;
+            break;
+        case "l":
+            player.isBlocking = false;
             break;
     }
 
