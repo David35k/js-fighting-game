@@ -27,7 +27,28 @@ const gameEndText = document.querySelector("#gameEndText");
 
 let gameOver = false;
 
-//Make the player and the enemy
+//The background
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: "./assets/background.png"
+})
+
+//The shop
+const shop = new Sprite({
+    position: {
+        x: 600,
+        y: 128
+    },
+    imageSrc: "./assets/shop.png",
+    scale: 2.75,
+    framesMax: 6
+})
+
+
+//Make the two players
 const player = new Fighter({
     position: {
         x: 80,
@@ -69,24 +90,6 @@ const enemy = new Fighter({
 
 });
 
-function attackCollision({ rectangle1, rectangle2 }, type) {
-    if (type === "short") {
-        return (
-            rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
-            rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
-            rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
-            rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-        );
-    } else if (type === "long") {
-        return (
-            rectangle1.attackBoxRange.position.x + rectangle1.attackBoxRange.size >= rectangle2.position.x &&
-            rectangle1.attackBoxRange.position.x <= rectangle2.position.x + rectangle2.width &&
-            rectangle1.attackBoxRange.position.y + rectangle1.attackBoxRange.size >= rectangle2.position.y &&
-            rectangle1.attackBoxRange.position.y <= rectangle2.position.y + rectangle2.height
-        );
-    }
-}
-
 const keys = {
     a: {
         pressed: false
@@ -127,25 +130,6 @@ function whoWins({ player, enemy, timerId }) {
     gameOver = true;
 }
 
-let timerId;
-
-//Changing the timer
-function decreaseTimer() {
-    if (!gameOver) {
-        if (timer > 0) {
-            timerId = setTimeout(decreaseTimer, 1000);
-            timer--;
-            timeText.innerHTML = timer;
-        }
-
-        //End game based on time. Whoever has more health wins
-        if (timer === 0) {
-            whoWins({ player, enemy });
-        }
-    }
-
-}
-
 decreaseTimer();
 
 //A loop that will run forever and animate the canvas
@@ -153,6 +137,8 @@ function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = "black";
     c.fillRect(0, 0, canvas.width, canvas.height);
+    background.update();
+    shop.update();
     player.update();
     enemy.update();
 

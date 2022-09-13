@@ -1,19 +1,41 @@
 //The sprite class for making sprites easily
 class Sprite {
-    constructor({ position }) {
+    constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
         this.position = position;
         this.height = 150;
         this.width = 50;
+        this.image = new Image();
+        this.image.src = imageSrc;
+        this.scale = scale;
+        this.framesMax = framesMax;
+        this.frameCurrent = 0;
+        this.framesElapsed = 0;
+        this.framesHold = 1;
     }
 
     draw() {
+        c.drawImage(
+            this.image,
+            this.frameCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            this.position.x,
+            this.position.y,
+            (this.image.width / this.framesMax) * this.scale,
+            this.image.height * this.scale
+        );
 
 
     }
 
     update() {
-
         this.draw();
+        if (this.frameCurrent < this.framesMax - 1) {
+            this.frameCurrent++;
+        } else {
+            this.frameCurrent = 0;
+        }
     }
 }
 
@@ -122,7 +144,8 @@ class Fighter {
             this.position.x += this.velocity.x / 2;
         }
 
-        if (this.position.y + this.height + this.velocity.y >= canvas.height) {
+        //Make gravity affect the players
+        if (this.position.y + this.height + this.velocity.y >= canvas.height - 95) {
             this.velocity.y = 0;
             this.jumpLimit = jumpLimitGlobal;
         } else {
