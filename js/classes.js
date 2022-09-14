@@ -1,6 +1,6 @@
 //The sprite class for making sprites easily
 class Sprite {
-    constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
+    constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
         this.position = position;
         this.height = 150;
         this.width = 50;
@@ -11,6 +11,7 @@ class Sprite {
         this.frameCurrent = 0;
         this.framesElapsed = 0;
         this.framesHold = 10;
+        this.offset = offset;
     }
 
     draw() {
@@ -20,8 +21,8 @@ class Sprite {
             0,
             this.image.width / this.framesMax,
             this.image.height,
-            this.position.x,
-            this.position.y,
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
             (this.image.width / this.framesMax) * this.scale,
             this.image.height * this.scale
         );
@@ -43,9 +44,15 @@ class Sprite {
 }
 
 //The fighter class to make making fighters easy
-class Fighter {
-    constructor({ position, velocity, speed, color, offset, rangeSpeed, direction }) {
-        this.position = position;
+class Fighter extends Sprite {
+    constructor({ position, velocity, speed, color, rangeSpeed, direction, imageSrc, scale = 1, framesMax = 1 }, offset = { x: 0, y: 0 }) {
+        super({
+            position,
+            imageSrc,
+            scale,
+            framesMax,
+        });
+
         this.velocity = velocity;
         this.height = 150;
         this.width = 50;
@@ -81,28 +88,31 @@ class Fighter {
         this.health = 100;
         this.isBlocking = false;
         this.direction = direction;
+        this.frameCurrent = 0;
+        this.framesElapsed = 0;
+        this.framesHold = 10;
     }
 
-    draw() {
+    // draw() {
 
-        //Draw the players
-        c.fillStyle = this.color;
-        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    //     //Draw the players
+    //     c.fillStyle = this.color;
+    //     c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
 
-        //Draw the attack box
-        if (this.isAttacking) {
-            c.fillStyle = "purple";
-            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        }
+    //     //Draw the attack box
+    //     if (this.isAttacking) {
+    //         c.fillStyle = "purple";
+    //         c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+    //     }
 
-        if (this.isAttackingRange) {
-            c.fillStyle = "orange";
-            c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+    //     if (this.isAttackingRange) {
+    //         c.fillStyle = "orange";
+    //         c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
-        }
+    //     }
 
-    }
+    // }
 
     update() {
 

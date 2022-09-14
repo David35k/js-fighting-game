@@ -61,12 +61,15 @@ const player = new Fighter({
 
     speed: 6,
     color: "blue",
-    offset: {
-        x: 0,
-        y: 0
-    },
     rangeSpeed: 7,
-    direction: "right"
+    direction: "right",
+    imageSrc: "./assets/dojaCat/idle.png",
+    framesMax: 6,
+    scale: 2.5,
+    offset: {
+        x: 17,
+        y: 0
+    }
 });
 
 const enemy = new Fighter({
