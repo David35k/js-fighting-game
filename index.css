@@ -92,3 +92,9 @@
     display: none;
     color: white;
 }
+
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    
+}
