@@ -86,7 +86,10 @@ class Fighter extends Sprite {
             },
             size: 50,
             speed: rangeSpeed,
-
+            offset: {
+                x: 0,
+                y: 25
+            }
         };
         this.isAttackingRange = false;
         this.rangeAttackRecharge = false;
@@ -108,15 +111,18 @@ class Fighter extends Sprite {
 
         if (this.direction == "right") {
             this.attackBox.offset.x = 0;
-
+            this.attackBoxRange.offset.x = 55;
         }
         if (this.direction == "left") {
             this.attackBox.offset.x = 50;
-
+            this.attackBoxRange.offset.x = -5;
         }
 
-        this.attackBox.position.x = this.position.x - this.attackBox.offset;
+        this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
+
+        this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
+        this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
 
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x;

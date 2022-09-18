@@ -52,7 +52,7 @@ const shop = new Sprite({
 //Make the two players
 const player = new Fighter({
     position: {
-        x: 0,
+        x: 50,
         y: 0
     },
     velocity: {
