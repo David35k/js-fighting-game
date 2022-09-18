@@ -115,6 +115,7 @@ class Fighter extends Sprite {
 
         }
 
+        this.attackBox.position.x = this.position.x - this.attackBox.offset;
         this.attackBox.position.y = this.position.y;
 
         if (!this.isAttackingRange) {
