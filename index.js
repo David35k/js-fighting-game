@@ -48,29 +48,31 @@ const shop = new Sprite({
 })
 
 
+
 //Make the two players
 const player = new Fighter({
     position: {
-        x: 80,
+        x: 0,
         y: 0
     },
     velocity: {
         x: 0,
         y: 0.2
     },
-
     speed: 6,
     color: "blue",
     rangeSpeed: 7,
     direction: "right",
     imageSrc: "./assets/dojaCat/idle.png",
-    framesMax: 6,
     scale: 2.5,
+    framesMax: 6,
     offset: {
-        x: 17,
-        y: 0
+        x: 40,
+        y: 10
     }
 });
+
+
 
 const enemy = new Fighter({
     position: {
@@ -81,16 +83,10 @@ const enemy = new Fighter({
         x: 0,
         y: 0.2
     },
-
     speed: 6,
     color: "red",
-    offset: {
-        x: 50,
-        y: 0
-    },
     rangeSpeed: -7,
     direction: "left"
-
 });
 
 const keys = {
@@ -143,7 +139,7 @@ function animate() {
     background.update();
     shop.update();
     player.update();
-    enemy.update();
+    //enemy.update();
 
     //Reset x velocity
     player.velocity.x = 0;

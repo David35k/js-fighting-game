@@ -28,10 +28,16 @@ class Sprite {
         );
 
 
+
     }
 
     update() {
         this.draw();
+        this.animateFrames();
+
+    }
+
+    animateFrames() {
         this.framesElapsed++;
         if (this.framesElapsed % this.framesHold === 0) {
             if (this.frameCurrent < this.framesMax - 1) {
@@ -45,12 +51,13 @@ class Sprite {
 
 //The fighter class to make making fighters easy
 class Fighter extends Sprite {
-    constructor({ position, velocity, speed, color, rangeSpeed, direction, imageSrc, scale = 1, framesMax = 1 }, offset = { x: 0, y: 0 }) {
+    constructor({ position, velocity, speed, color, rangeSpeed, direction, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
         super({
             position,
             imageSrc,
             scale,
             framesMax,
+            offset
         });
 
         this.velocity = velocity;
@@ -63,7 +70,10 @@ class Fighter extends Sprite {
                 x: this.position.x,
                 y: this.position.y
             },
-            offset,
+            offset: {
+                x: 0,
+                y: 0
+            },
             width: 100,
             height: 50
         };
@@ -76,10 +86,7 @@ class Fighter extends Sprite {
             },
             size: 50,
             speed: rangeSpeed,
-            offset: {
-                x: 50,
-                y: 25
-            }
+
         };
         this.isAttackingRange = false;
         this.rangeAttackRecharge = false;
@@ -93,45 +100,26 @@ class Fighter extends Sprite {
         this.framesHold = 10;
     }
 
-    // draw() {
-
-    //     //Draw the players
-    //     c.fillStyle = this.color;
-    //     c.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-
-    //     //Draw the attack box
-    //     if (this.isAttacking) {
-    //         c.fillStyle = "purple";
-    //         c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-    //     }
-
-    //     if (this.isAttackingRange) {
-    //         c.fillStyle = "orange";
-    //         c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
-
-    //     }
-
-    // }
-
     update() {
 
         this.draw();
 
+        this.animateFrames();
+
         if (this.direction == "right") {
             this.attackBox.offset.x = 0;
-            this.attackBoxRange.offset.x = 60;
-        } else if (this.direction == "left") {
+
+        }
+        if (this.direction == "left") {
             this.attackBox.offset.x = 50;
-            this.attackBoxRange.offset.x = -60;
+
         }
 
-        this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
 
         if (!this.isAttackingRange) {
-            this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
-            this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
+            this.attackBoxRange.position.x = this.position.x;
+            this.attackBoxRange.position.y = this.position.y;
 
             if (this.direction == "right") {
                 this.attackBoxRange.speed = 7;
