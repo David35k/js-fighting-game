@@ -121,12 +121,9 @@ class Fighter extends Sprite {
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y;
 
-        this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
-        this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
-
         if (!this.isAttackingRange) {
-            this.attackBoxRange.position.x = this.position.x;
-            this.attackBoxRange.position.y = this.position.y;
+            this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
+            this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
 
             if (this.direction == "right") {
                 this.attackBoxRange.speed = 7;
@@ -178,6 +175,7 @@ class Fighter extends Sprite {
             }, this.rechargeTime)
         }
 
+        console.log("attacking range");
     }
 
     jump() {

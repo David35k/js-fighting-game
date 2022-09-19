@@ -13,7 +13,6 @@ function decreaseTimer() {
             whoWins({ player, enemy });
         }
     }
-
 }
 
 //A function that checks the different collisions in the game

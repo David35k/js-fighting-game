@@ -47,8 +47,6 @@ const shop = new Sprite({
     framesMax: 6
 })
 
-
-
 //Make the two players
 const player = new Fighter({
     position: {
@@ -71,8 +69,6 @@ const player = new Fighter({
         y: 10
     }
 });
-
-
 
 const enemy = new Fighter({
     position: {
@@ -177,7 +173,6 @@ function animate() {
             } else {
                 console.log("blocked!");
             }
-
         }
 
         //Detect for long range collision player
@@ -232,9 +227,6 @@ function animate() {
 animate();
 
 window.addEventListener("keydown", (event) => {
-
-    //console.log(event.key + ", " + event.code);
-
     //Player keys
     switch (event.key) {
         case "d":
