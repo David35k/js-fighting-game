@@ -61,19 +61,21 @@ const player = new Fighter({
     color: "blue",
     rangeSpeed: 7,
     direction: "right",
-    imageSrc: "./assets/dojaCat/idle.png",
+    imageSrc: "./assets/samuraiMack/idle.png",
     scale: 2.5,
-    framesMax: 6,
+    framesMax: 8,
     offset: {
-        x: 40,
-        y: 10
+        x: 215,
+        y: 153
     },
     sprites: {
         idle: {
-            imageSrc: "./assets/dojaCat/idle.png"
+            imageSrc: "./assets/samuraiMack/Idle.png",
+            framesMax: 8
         },
         run: {
-            imageSrc: "./assets/dojaCat/run.png"
+            imageSrc: "./assets/samuraiMack/Run.png",
+            framesMax: 8
         }
     }
 });
