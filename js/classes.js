@@ -51,7 +51,18 @@ class Sprite {
 
 //The fighter class to make making fighters easy
 class Fighter extends Sprite {
-    constructor({ position, velocity, speed, color, rangeSpeed, direction, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
+    constructor({ position,
+        velocity,
+        speed,
+        color,
+        rangeSpeed,
+        direction,
+        imageSrc,
+        scale = 1,
+        framesMax = 1,
+        offset = { x: 0, y: 0 },
+        sprites
+    }) {
         super({
             position,
             imageSrc,
@@ -101,6 +112,7 @@ class Fighter extends Sprite {
         this.frameCurrent = 0;
         this.framesElapsed = 0;
         this.framesHold = 10;
+        this.sprites = sprites;
     }
 
     update() {

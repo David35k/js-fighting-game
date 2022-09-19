@@ -67,6 +67,14 @@ const player = new Fighter({
     offset: {
         x: 40,
         y: 10
+    },
+    sprites: {
+        idle: {
+            imageSrc: "./assets/dojaCat/idle.png"
+        },
+        run: {
+            imageSrc: "./assets/dojaCat/run.png"
+        }
     }
 });
 
