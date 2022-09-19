@@ -76,6 +76,10 @@ const player = new Fighter({
         run: {
             imageSrc: "./assets/samuraiMack/Run.png",
             framesMax: 8
+        },
+        jump: {
+            imageSrc: "./assets/samuraiMack/Jump.png",
+            framesMax: 2
         }
     }
 });
@@ -154,13 +158,16 @@ function animate() {
     //Only do this stuff if the game is not over
     if (!gameOver) {
         //Player movement
+        player.image = player.sprites.idle.image;
         if (keys.d.pressed && player.lastKey === "d") {
             player.velocity.x = player.speed;
             player.direction = "right";
+            player.image = player.sprites.run.image;
         } else if (keys.a.pressed && player.lastKey === "a") {
             player.velocity.x = -player.speed;
             player.direction = "left";
-        }
+            player.image = player.sprites.run.image;
+        } 
 
         //Enemy movement
         if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
@@ -170,6 +177,11 @@ function animate() {
             enemy.velocity.x = -enemy.speed;
             enemy.direction = "left";
         }
+
+        // if(player.velocity.y < 0) {
+        //     player.image = player.sprites.jump.image;
+        //     player.framesMax = player.sprites.jump.framesMax;
+        // }
 
         //Detect for short range collision player
         if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
