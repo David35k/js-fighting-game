@@ -47,7 +47,7 @@ const shop = new Sprite({
     framesMax: 6
 })
 
-//Make the two players
+//Make player 1
 const player = new Fighter({
     position: {
         x: 50,
@@ -69,6 +69,7 @@ const player = new Fighter({
         y: 0
     },
     sprites: {
+        //Right
         idle: {
             imageSrc: "./assets/dojaCat/Idle.png",
             framesMax: 6
@@ -80,10 +81,41 @@ const player = new Fighter({
         jump: {
             imageSrc: "./assets/dojaCat/Jump.png",
             framesMax: 3
-        }
+        },
+        fall: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
+        attackShort: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
+
+        //Left
+        idleLeft: {
+            imageSrc: "./assets/dojaCat/Idle.png",
+            framesMax: 6
+        },
+        runLeft: {
+            imageSrc: "./assets/dojaCat/Run.png",
+            framesMax: 9
+        },
+        jumpLeft: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
+        fallLeft: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
+        attackShortLeft: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
     }
 });
 
+//Make player 2
 const enemy = new Fighter({
     position: {
         x: 890,
@@ -96,7 +128,59 @@ const enemy = new Fighter({
     speed: 6,
     color: "red",
     rangeSpeed: -7,
-    direction: "left"
+    direction: "left",
+    imageSrc: "./assets/kenji/Idle.png",
+    scale: 2.9,
+    framesMax: 4,
+    offset: {
+        x: 220,
+        y: 210
+    },
+    sprites: {
+        //Right
+        idle: {
+            imageSrc: "./assets/kenji/Idle.png",
+            framesMax: 4
+        },
+        run: {
+            imageSrc: "./assets/kenji/Run.png",
+            framesMax: 8
+        },
+        jump: {
+            imageSrc: "./assets/kenji/Jump.png",
+            framesMax: 2
+        },
+        fall: {
+            imageSrc: "./assets/kenji/Fall.png",
+            framesMax: 2
+        },
+        attackShort: {
+            imageSrc: "./assets/kenji/Attack1Flipped.png",
+            framesMax: 4
+        },
+
+        //Left
+        idleLeft: {
+            imageSrc: "./assets/kenji/Idle.png",
+            framesMax: 4
+        },
+        runLeft: {
+            imageSrc: "./assets/kenji/Run.png",
+            framesMax: 8
+        },
+        jumpLeft: {
+            imageSrc: "./assets/kenji/Jump.png",
+            framesMax: 2
+        },
+        fallLeft: {
+            imageSrc: "./assets/kenji/Fall.png",
+            framesMax: 2
+        },
+        attackShortLeft: {
+            imageSrc: "./assets/kenji/Attack1.png",
+            framesMax: 4
+        }
+    }
 });
 
 const keys = {
@@ -124,7 +208,6 @@ function isBlocked(attacker, blocker) {
 }
 
 function whoWins({ player, enemy, timerId }) {
-    //clearTimeout(timerId);
 
     gameEndText.style.display = "block";
 
@@ -149,7 +232,7 @@ function animate() {
     background.update();
     shop.update();
     player.update();
-    //enemy.update();
+    enemy.update();
 
     //Reset x velocity
     player.velocity.x = 0;
@@ -174,14 +257,27 @@ function animate() {
         if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
             enemy.velocity.x = enemy.speed;
             enemy.direction = "right";
+            enemy.switchSprites("run");
         } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
             enemy.velocity.x = -enemy.speed;
             enemy.direction = "left";
+            enemy.switchSprites("run");
+        } else {
+            enemy.switchSprites("idle");
         }
 
-        //Enable the jumping animation
+        //Enable the jumping and falling animation for player
         if (player.velocity.y < 0) {
             player.switchSprites("jump");
+        } else if (player.velocity.y > 0) {
+            player.switchSprites("fall");
+        }
+
+        //Enable the jumping and falling animtation for enemy
+        if (enemy.velocity.y < 0) {
+            enemy.switchSprites("jump");
+        } else if (enemy.velocity.y > 0) {
+            enemy.switchSprites("fall");
         }
 
         //Detect for short range collision player

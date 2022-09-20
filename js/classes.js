@@ -26,9 +26,6 @@ class Sprite {
             (this.image.width / this.framesMax) * this.scale,
             this.image.height * this.scale
         );
-
-
-
     }
 
     update() {
@@ -118,8 +115,6 @@ class Fighter extends Sprite {
             sprites[sprite].image = new Image();
             sprites[sprite].image.src = sprites[sprite].imageSrc;
         }
-
-
     }
 
     update() {
@@ -171,41 +166,99 @@ class Fighter extends Sprite {
         //Make gravity affect the players
         if (this.position.y + this.height + this.velocity.y >= canvas.height - 95) {
             this.velocity.y = 0;
+            this.position.y = 331;
             this.jumpLimit = jumpLimitGlobal;
         } else {
             this.velocity.y += gravity;
         }
-
     }
 
     switchSprites(sprite) {
-        
-        switch (sprite) {
-            case "idle":
-                if (this.image !== this.sprites.idle.image) {
-                    this.image = this.sprites.idle.image;
-                    this.framesMax = this.sprites.idle.framesMax;
-                    this.frameCurrent = 0;
-                }
-                break;
-            case "run":
-                if (this.image !== this.sprites.run.image) {
-                    this.image = this.sprites.run.image;
-                    this.framesMax = this.sprites.run.framesMax;
-                    this.frameCurrent = 0;
-                }
-                break;
-            case "jump":
-                if (this.image !== this.sprites.jump.image) {
-                    this.image = this.sprites.jump.image;
-                    this.framesMax = this.sprites.jump.framesMax;
-                    this.frameCurrent = 0;
-                }
-                break;
+
+        if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
+        if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
+
+        if (this.direction === "right") {
+            switch (sprite) {
+                case "idle":
+                    if (this.image !== this.sprites.idle.image) {
+                        this.image = this.sprites.idle.image;
+                        this.framesMax = this.sprites.idle.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "run":
+                    if (this.image !== this.sprites.run.image) {
+                        this.image = this.sprites.run.image;
+                        this.framesMax = this.sprites.run.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "jump":
+                    if (this.image !== this.sprites.jump.image) {
+                        this.image = this.sprites.jump.image;
+                        this.framesMax = this.sprites.jump.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "fall":
+                    if (this.image !== this.sprites.fall.image) {
+                        this.image = this.sprites.fall.image;
+                        this.framesMax = this.sprites.fall.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "attackShort":
+                    if (this.image !== this.sprites.attackShort.image) {
+                        this.image = this.sprites.attackShort.image;
+                        this.framesMax = this.sprites.attackShort.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+            }
+        } else if (this.direction === "left") {
+            switch (sprite) {
+                case "idle":
+                    if (this.image !== this.sprites.idleLeft.image) {
+                        this.image = this.sprites.idleLeft.image;
+                        this.framesMax = this.sprites.idleLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "run":
+                    if (this.image !== this.sprites.runLeft.image) {
+                        this.image = this.sprites.runLeft.image;
+                        this.framesMax = this.sprites.runLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "jump":
+                    if (this.image !== this.sprites.jumpLeft.image) {
+                        this.image = this.sprites.jumpLeft.image;
+                        this.framesMax = this.sprites.jumpLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "fall":
+                    if (this.image !== this.sprites.fallLeft.image) {
+                        this.image = this.sprites.fallLeft.image;
+                        this.framesMax = this.sprites.fallLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "attackShort":
+                    if (this.image !== this.sprites.attackShortLeft.image) {
+                        this.image = this.sprites.attackShortLeft.image;
+                        this.framesMax = this.sprites.attackShortLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+            }
         }
     }
 
     attack() {
+        this.switchSprites("attackShort");
         this.isAttacking = true;
         setTimeout(() => {
             this.isAttacking = false;
@@ -220,8 +273,6 @@ class Fighter extends Sprite {
                 this.rangeAttackRecharge = false;
             }, this.rechargeTime)
         }
-
-        console.log("attacking range");
     }
 
     jump() {
