@@ -61,25 +61,25 @@ const player = new Fighter({
     color: "blue",
     rangeSpeed: 7,
     direction: "right",
-    imageSrc: "./assets/samuraiMack/idle.png",
+    imageSrc: "./assets/dojaCat/Idle.png",
     scale: 2.5,
-    framesMax: 8,
+    framesMax: 6,
     offset: {
-        x: 215,
-        y: 153
+        x: 40,
+        y: 0
     },
     sprites: {
         idle: {
-            imageSrc: "./assets/samuraiMack/Idle.png",
-            framesMax: 8
+            imageSrc: "./assets/dojaCat/Idle.png",
+            framesMax: 6
         },
         run: {
-            imageSrc: "./assets/samuraiMack/Run.png",
-            framesMax: 8
+            imageSrc: "./assets/dojaCat/Run.png",
+            framesMax: 9
         },
         jump: {
-            imageSrc: "./assets/samuraiMack/Jump.png",
-            framesMax: 2
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
         }
     }
 });
@@ -158,16 +158,17 @@ function animate() {
     //Only do this stuff if the game is not over
     if (!gameOver) {
         //Player movement
-        player.image = player.sprites.idle.image;
         if (keys.d.pressed && player.lastKey === "d") {
             player.velocity.x = player.speed;
             player.direction = "right";
-            player.image = player.sprites.run.image;
+            player.switchSprites("run");
         } else if (keys.a.pressed && player.lastKey === "a") {
             player.velocity.x = -player.speed;
             player.direction = "left";
-            player.image = player.sprites.run.image;
-        } 
+            player.switchSprites("run");
+        } else {
+            player.switchSprites("idle");
+        }
 
         //Enemy movement
         if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
@@ -178,10 +179,10 @@ function animate() {
             enemy.direction = "left";
         }
 
-        // if(player.velocity.y < 0) {
-        //     player.image = player.sprites.jump.image;
-        //     player.framesMax = player.sprites.jump.framesMax;
-        // }
+        //Enable the jumping animation
+        if (player.velocity.y < 0) {
+            player.switchSprites("jump");
+        }
 
         //Detect for short range collision player
         if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
