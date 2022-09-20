@@ -80,9 +80,9 @@ class Fighter extends Sprite {
             },
             offset: {
                 x: 0,
-                y: 0
+                y: 50
             },
-            width: 100,
+            width: 175,
             height: 50
         };
         this.color = color;
@@ -128,12 +128,21 @@ class Fighter extends Sprite {
             this.attackBoxRange.offset.x = 55;
         }
         if (this.direction == "left") {
-            this.attackBox.offset.x = 50;
-            this.attackBoxRange.offset.x = -5;
+            this.attackBox.offset.x = 125;
+            this.attackBoxRange.offset.x = -55;
         }
 
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
-        this.attackBox.position.y = this.position.y;
+        this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+
+        c.fillStyle = "orange";
+        c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+
+        c.fillStyle = "green";
+        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+
+        c.fillStyle = "purple";
+        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
 
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
@@ -178,7 +187,7 @@ class Fighter extends Sprite {
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
-        if (this.direction === "right") {
+        if (this.direction === "right" || this.blockDirection === "left") {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idle.image) {
@@ -216,7 +225,7 @@ class Fighter extends Sprite {
                     }
                     break;
             }
-        } else if (this.direction === "left") {
+        } else if (this.direction === "left" || this.blockDirection === "right") {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idleLeft.image) {

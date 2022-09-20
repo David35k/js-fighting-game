@@ -65,7 +65,7 @@ const player = new Fighter({
     scale: 2.5,
     framesMax: 6,
     offset: {
-        x: 40,
+        x: 50,
         y: 0
     },
     sprites: {
@@ -133,25 +133,25 @@ const enemy = new Fighter({
     scale: 2.9,
     framesMax: 4,
     offset: {
-        x: 220,
+        x: 260,
         y: 210
     },
     sprites: {
         //Right
         idle: {
-            imageSrc: "./assets/kenji/Idle.png",
+            imageSrc: "./assets/kenji/IdleFlipped.png",
             framesMax: 4
         },
         run: {
-            imageSrc: "./assets/kenji/Run.png",
+            imageSrc: "./assets/kenji/RunFlipped.png",
             framesMax: 8
         },
         jump: {
-            imageSrc: "./assets/kenji/Jump.png",
+            imageSrc: "./assets/kenji/JumpFlipped.png",
             framesMax: 2
         },
         fall: {
-            imageSrc: "./assets/kenji/Fall.png",
+            imageSrc: "./assets/kenji/FallFlipped.png",
             framesMax: 2
         },
         attackShort: {
