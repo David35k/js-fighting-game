@@ -83,12 +83,12 @@ const player = new Fighter({
             framesMax: 3
         },
         fall: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/Fall.png",
             framesMax: 3
         },
         attackShort: {
-            imageSrc: "./assets/dojaCat/Jump.png",
-            framesMax: 3
+            imageSrc: "./assets/dojaCat/Attack1.png",
+            framesMax: 4
         },
 
         //Left
@@ -105,11 +105,11 @@ const player = new Fighter({
             framesMax: 3
         },
         fallLeft: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/Fall.png",
             framesMax: 3
         },
         attackShortLeft: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/Attack1.png",
             framesMax: 3
         },
     }

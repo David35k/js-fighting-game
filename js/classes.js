@@ -105,6 +105,7 @@ class Fighter extends Sprite {
         this.jumpLimit = jumpLimitGlobal;
         this.health = 100;
         this.isBlocking = false;
+        this.blockDirection = "";
         this.direction = direction;
         this.frameCurrent = 0;
         this.framesElapsed = 0;
@@ -135,14 +136,14 @@ class Fighter extends Sprite {
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-        c.fillStyle = "orange";
-        c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        // c.fillStyle = "orange";
+        // c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
-        c.fillStyle = "green";
-        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+        // c.fillStyle = "green";
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
-        c.fillStyle = "purple";
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        // c.fillStyle = "purple";
+        // c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
 
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
@@ -170,6 +171,12 @@ class Fighter extends Sprite {
         } else {
             this.position.y += this.velocity.y;
             this.position.x += this.velocity.x / 2;
+
+            if (this.direction === "right") {
+                this.blockDirection = "left";
+            } else if (this.direction === "left") {
+                this.blockDirection = "right";
+            }
         }
 
         //Make gravity affect the players
@@ -187,7 +194,7 @@ class Fighter extends Sprite {
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
-        if (this.direction === "right" || this.blockDirection === "left") {
+        if (this.direction === "right" && !this.isBlocking) {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idle.image) {
@@ -225,7 +232,87 @@ class Fighter extends Sprite {
                     }
                     break;
             }
-        } else if (this.direction === "left" || this.blockDirection === "right") {
+        } else if (this.direction === "left" && !this.isBlocking) {
+            switch (sprite) {
+                case "idle":
+                    if (this.image !== this.sprites.idleLeft.image) {
+                        this.image = this.sprites.idleLeft.image;
+                        this.framesMax = this.sprites.idleLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "run":
+                    if (this.image !== this.sprites.runLeft.image) {
+                        this.image = this.sprites.runLeft.image;
+                        this.framesMax = this.sprites.runLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "jump":
+                    if (this.image !== this.sprites.jumpLeft.image) {
+                        this.image = this.sprites.jumpLeft.image;
+                        this.framesMax = this.sprites.jumpLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "fall":
+                    if (this.image !== this.sprites.fallLeft.image) {
+                        this.image = this.sprites.fallLeft.image;
+                        this.framesMax = this.sprites.fallLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "attackShort":
+                    if (this.image !== this.sprites.attackShortLeft.image) {
+                        this.image = this.sprites.attackShortLeft.image;
+                        this.framesMax = this.sprites.attackShortLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+            }
+        }
+
+        //For blocking
+
+        if (this.isBlocking && this.blockDirection === "right") {
+            switch (sprite) {
+                case "idle":
+                    if (this.image !== this.sprites.idle.image) {
+                        this.image = this.sprites.idle.image;
+                        this.framesMax = this.sprites.idle.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "run":
+                    if (this.image !== this.sprites.run.image) {
+                        this.image = this.sprites.run.image;
+                        this.framesMax = this.sprites.run.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "jump":
+                    if (this.image !== this.sprites.jump.image) {
+                        this.image = this.sprites.jump.image;
+                        this.framesMax = this.sprites.jump.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "fall":
+                    if (this.image !== this.sprites.fall.image) {
+                        this.image = this.sprites.fall.image;
+                        this.framesMax = this.sprites.fall.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "attackShort":
+                    if (this.image !== this.sprites.attackShort.image) {
+                        this.image = this.sprites.attackShort.image;
+                        this.framesMax = this.sprites.attackShort.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+            }
+        } else if (this.isBlocking && this.blockDirection === "left") {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idleLeft.image) {
