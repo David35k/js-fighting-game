@@ -6,9 +6,6 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-//Make the background
-c.fillRect(0, 0, canvas.width, canvas.height);
-
 //Gravity constant
 const gravity = 0.7;
 
@@ -19,15 +16,17 @@ const jumpLimitGlobal = 2;
 const playerHealthDisplay = document.querySelector("#playerHealth");
 const enemyHealthDisplay = document.querySelector("#enemyHealth");
 
-let timer = 60; //Length of game in seconds
+//Length of game in seconds
+let timer = 60;
 const timeText = document.querySelector("#timeText");
 
 //Text which tells us the outcome of the game
 const gameEndText = document.querySelector("#gameEndText");
 
+//Variable that controls whether the game is over or not
 let gameOver = false;
 
-//The background
+//Background sprite
 const background = new Sprite({
     position: {
         x: 0,
@@ -36,7 +35,7 @@ const background = new Sprite({
     imageSrc: "./assets/background.png"
 })
 
-//The shop
+//Shop sprite
 const shop = new Sprite({
     position: {
         x: 600,
@@ -90,6 +89,10 @@ const player = new Fighter({
             imageSrc: "./assets/dojaCat/Attack1.png",
             framesMax: 4
         },
+        block: {
+            imageSrc: "./assets/dojaCat/Jump.png",
+            framesMax: 3
+        },
 
         //Left
         idleLeft: {
@@ -110,6 +113,10 @@ const player = new Fighter({
         },
         attackShortLeft: {
             imageSrc: "./assets/dojaCat/Attack1.png",
+            framesMax: 4
+        },
+        blockLeft: {
+            imageSrc: "./assets/dojaCat/Jump.png",
             framesMax: 3
         },
     }
@@ -158,6 +165,10 @@ const enemy = new Fighter({
             imageSrc: "./assets/kenji/Attack1Flipped.png",
             framesMax: 4
         },
+        block: {
+            imageSrc: "./assets/kenji/FallFlipped.png",
+            framesMax: 2
+        },
 
         //Left
         idleLeft: {
@@ -179,10 +190,15 @@ const enemy = new Fighter({
         attackShortLeft: {
             imageSrc: "./assets/kenji/Attack1.png",
             framesMax: 4
+        },
+        blockLeft: {
+            imageSrc: "./assets/kenji/Fall.png",
+            framesMax: 2
         }
     }
 });
 
+//The keys used for horizontal movement
 const keys = {
     a: {
         pressed: false
@@ -198,6 +214,7 @@ const keys = {
     }
 };
 
+//Function that checks whether an attack got blocked or not
 function isBlocked(attacker, blocker) {
     if (attacker.direction == "right" && blocker.direction == "right" && blocker.isBlocking ||
         attacker.direction == "left" && blocker.direction == "left" && blocker.isBlocking) {
@@ -207,6 +224,7 @@ function isBlocked(attacker, blocker) {
     }
 }
 
+//A function that checks which player won the game
 function whoWins({ player, enemy, timerId }) {
 
     gameEndText.style.display = "block";
@@ -222,6 +240,7 @@ function whoWins({ player, enemy, timerId }) {
     gameOver = true;
 }
 
+//Constantly call the decrease timer function
 decreaseTimer();
 
 //A loop that will run forever and animate the canvas
@@ -343,8 +362,10 @@ function animate() {
     }
 }
 
+//Constantly animate the canvas
 animate();
 
+//Check for keypresses and enable movement and attacks
 window.addEventListener("keydown", (event) => {
     //Player keys
     switch (event.key) {
@@ -399,6 +420,7 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+//Check for the user letting go of keys
 window.addEventListener("keyup", (event) => {
     //Player keys
     switch (event.key) {
@@ -423,6 +445,7 @@ window.addEventListener("keyup", (event) => {
             break;
     }
 
+    //Enemy attacks are on numpad so uses code instead of key
     switch (event.code) {
         case "Numpad3":
             enemy.isBlocking = false;

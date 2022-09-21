@@ -14,6 +14,7 @@ class Sprite {
         this.offset = offset;
     }
 
+    //This is what draws the images onto the canvas
     draw() {
         c.drawImage(
             this.image,
@@ -28,12 +29,14 @@ class Sprite {
         );
     }
 
+    //This is run constantly to animate the canvas
     update() {
         this.draw();
         this.animateFrames();
 
     }
 
+    //This is in charge of changing all the frames and creating animations
     animateFrames() {
         this.framesElapsed++;
         if (this.framesElapsed % this.framesHold === 0) {
@@ -46,7 +49,7 @@ class Sprite {
     }
 }
 
-//The fighter class to make making fighters easy
+//The fighter class to make creating fighters easy
 class Fighter extends Sprite {
     constructor({ position,
         velocity,
@@ -118,12 +121,14 @@ class Fighter extends Sprite {
         }
     }
 
+    //Update is being run all the time so all calculations are done here
     update() {
 
+        //Draw the sprites onto the canvas and animate them
         this.draw();
-
         this.animateFrames();
 
+        //Change offsets depending on direction so players can attack in both directions
         if (this.direction == "right") {
             this.attackBox.offset.x = 0;
             this.attackBoxRange.offset.x = 55;
@@ -133,8 +138,11 @@ class Fighter extends Sprite {
             this.attackBoxRange.offset.x = -55;
         }
 
+        //Update the position of the attack box
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+
+        //This is used to draw the hitboxes (mainly for debugging and tweaking them)
 
         // c.fillStyle = "orange";
         // c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
@@ -145,6 +153,7 @@ class Fighter extends Sprite {
         // c.fillStyle = "purple";
         // c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
 
+        //Update the position of the ranged attack box
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
@@ -154,22 +163,24 @@ class Fighter extends Sprite {
             } else if (this.direction == "left") {
                 this.attackBoxRange.speed = -7;
             }
-
+            //If the player has shot the long range attack it should stop following the player and shoot out
         } else if (this.isAttackingRange) {
             this.attackBoxRange.position.x += this.attackBoxRange.speed;
 
         }
 
+        //If the ranged attack box goes off screen delete it
         if (this.attackBoxRange.position.x + this.attackBoxRange.size >= canvas.width ||
             this.attackBoxRange.position.x <= 0) {
             this.isAttackingRange = false;
         }
 
+        //If the players are blocking make them move slower
         if (!this.isBlocking) {
             this.position.y += this.velocity.y;
             this.position.x += this.velocity.x;
         } else {
-            this.position.y += this.velocity.y;
+            this.position.y += this.velocity.y / 2;
             this.position.x += this.velocity.x / 2;
 
             if (this.direction === "right") {
@@ -189,92 +200,30 @@ class Fighter extends Sprite {
         }
     }
 
+    //A function used to switch to the proper animation at the correct time
     switchSprites(sprite) {
 
+        //If the attack animations are not finished do not interrupt them
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
-        if (this.direction === "right" && !this.isBlocking) {
-            switch (sprite) {
-                case "idle":
-                    if (this.image !== this.sprites.idle.image) {
-                        this.image = this.sprites.idle.image;
-                        this.framesMax = this.sprites.idle.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "run":
-                    if (this.image !== this.sprites.run.image) {
-                        this.image = this.sprites.run.image;
-                        this.framesMax = this.sprites.run.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "jump":
-                    if (this.image !== this.sprites.jump.image) {
-                        this.image = this.sprites.jump.image;
-                        this.framesMax = this.sprites.jump.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "fall":
-                    if (this.image !== this.sprites.fall.image) {
-                        this.image = this.sprites.fall.image;
-                        this.framesMax = this.sprites.fall.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "attackShort":
-                    if (this.image !== this.sprites.attackShort.image) {
-                        this.image = this.sprites.attackShort.image;
-                        this.framesMax = this.sprites.attackShort.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-            }
-        } else if (this.direction === "left" && !this.isBlocking) {
-            switch (sprite) {
-                case "idle":
-                    if (this.image !== this.sprites.idleLeft.image) {
-                        this.image = this.sprites.idleLeft.image;
-                        this.framesMax = this.sprites.idleLeft.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "run":
-                    if (this.image !== this.sprites.runLeft.image) {
-                        this.image = this.sprites.runLeft.image;
-                        this.framesMax = this.sprites.runLeft.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "jump":
-                    if (this.image !== this.sprites.jumpLeft.image) {
-                        this.image = this.sprites.jumpLeft.image;
-                        this.framesMax = this.sprites.jumpLeft.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "fall":
-                    if (this.image !== this.sprites.fallLeft.image) {
-                        this.image = this.sprites.fallLeft.image;
-                        this.framesMax = this.sprites.fallLeft.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
-                case "attackShort":
-                    if (this.image !== this.sprites.attackShortLeft.image) {
-                        this.image = this.sprites.attackShortLeft.image;
-                        this.framesMax = this.sprites.attackShortLeft.framesMax;
-                        this.frameCurrent = 0;
-                    }
-                    break;
+        //If the character is blocking
+        if (this.isBlocking) {
+            if (this.direction === "right") {
+                this.image = this.sprites.blockLeft.image;
+                this.framesMax = this.sprites.blockLeft.framesMax;
+                this.frameCurrent = 0;
+                return;
+            } else if (this.direction === "left") {
+                this.image = this.sprites.block.image;
+                this.framesMax = this.sprites.block.framesMax;
+                this.frameCurrent = 0;
+                return;
             }
         }
 
-        //For blocking
-
-        if (this.isBlocking && this.blockDirection === "right") {
+        //For animations facing right
+        if (this.direction === "right") {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idle.image) {
@@ -312,7 +261,8 @@ class Fighter extends Sprite {
                     }
                     break;
             }
-        } else if (this.isBlocking && this.blockDirection === "left") {
+            //For animations facing left
+        } else if (this.direction === "left") {
             switch (sprite) {
                 case "idle":
                     if (this.image !== this.sprites.idleLeft.image) {
@@ -353,6 +303,7 @@ class Fighter extends Sprite {
         }
     }
 
+    //Enables the players to do a short range attack
     attack() {
         this.switchSprites("attackShort");
         this.isAttacking = true;
@@ -361,6 +312,7 @@ class Fighter extends Sprite {
         }, 100);
     }
 
+    //Enables the players to do a long range attack
     attackRange() {
         if (!this.isAttackingRange && !this.rangeAttackRecharge) {
             this.isAttackingRange = true;
@@ -371,6 +323,7 @@ class Fighter extends Sprite {
         }
     }
 
+    //Function for jumping used for counting the max amount of jumps
     jump() {
         if (this.jumpLimit > 0) {
             this.velocity.y = -17;
@@ -378,6 +331,7 @@ class Fighter extends Sprite {
         }
     }
 
+    //Block function
     block() {
         this.isBlocking = true;
     }

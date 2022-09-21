@@ -16,6 +16,7 @@ function decreaseTimer() {
 }
 
 //A function that checks the different collisions in the game
+//The different types of collisions are long and short range
 function attackCollision({ rectangle1, rectangle2 }, type) {
     if (type === "short") {
         return (
