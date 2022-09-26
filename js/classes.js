@@ -134,7 +134,8 @@ class Fighter extends Sprite {
             this.attackBoxRange.offset.x = 55;
         }
         if (this.direction == "left") {
-            this.attackBox.offset.x = 125;
+            enemy.attackBox.offset.x = 125;
+            player.attackBox.offset.x = 50;
             this.attackBoxRange.offset.x = -55;
         }
 
@@ -159,9 +160,18 @@ class Fighter extends Sprite {
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
 
             if (this.direction == "right") {
-                this.attackBoxRange.speed = 7;
+                if(this === player){
+                    player.attackBoxRange.speed = 10;
+                }else {
+                    enemy.attackBoxRange.speed = 7;
+                }
+                
             } else if (this.direction == "left") {
-                this.attackBoxRange.speed = -7;
+                if(this === player){
+                    player.attackBoxRange.speed = -10;
+                }else {
+                    enemy.attackBoxRange.speed = -7;
+                }
             }
             //If the player has shot the long range attack it should stop following the player and shoot out
         } else if (this.isAttackingRange) {

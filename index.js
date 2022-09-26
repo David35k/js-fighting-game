@@ -96,7 +96,7 @@ const player = new Fighter({
 
         //Left
         idleLeft: {
-            imageSrc: "./assets/dojaCat/Idle.png",
+            imageSrc: "./assets/dojaCat/IdleFlipped.png",
             framesMax: 6
         },
         runLeft: {
@@ -112,7 +112,7 @@ const player = new Fighter({
             framesMax: 3
         },
         attackShortLeft: {
-            imageSrc: "./assets/dojaCat/Attack1.png",
+            imageSrc: "./assets/dojaCat/Attack1Flipped.png",
             framesMax: 4
         },
         blockLeft: {
@@ -121,6 +121,9 @@ const player = new Fighter({
         },
     }
 });
+
+//This is what happens when you hardcode stuff
+player.attackBox.width = 100;
 
 //Make player 2
 const enemy = new Fighter({
@@ -319,7 +322,7 @@ function animate() {
 
             player.isAttackingRange = false;
             if (!isBlocked(player, enemy)) {
-                enemy.health -= 20;
+                enemy.health -= 30;
                 enemyHealthDisplay.style.width = enemy.health + "%";
                 console.log("enemy health: " + enemy.health);
             } else {
