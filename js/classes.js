@@ -145,8 +145,8 @@ class Fighter extends Sprite {
 
         //This is used to draw the hitboxes (mainly for debugging and tweaking them)
 
-        // c.fillStyle = "orange";
-        // c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        //  c.fillStyle = "orange";
+        //  c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
         // c.fillStyle = "green";
         // c.fillRect(this.position.x, this.position.y, this.width, this.height);

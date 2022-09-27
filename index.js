@@ -100,15 +100,15 @@ const player = new Fighter({
             framesMax: 6
         },
         runLeft: {
-            imageSrc: "./assets/dojaCat/Run.png",
+            imageSrc: "./assets/dojaCat/RunFlipped.png",
             framesMax: 9
         },
         jumpLeft: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/JumpFlipped.png",
             framesMax: 3
         },
         fallLeft: {
-            imageSrc: "./assets/dojaCat/Fall.png",
+            imageSrc: "./assets/dojaCat/FallFlipped.png",
             framesMax: 3
         },
         attackShortLeft: {
