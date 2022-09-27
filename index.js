@@ -169,7 +169,7 @@ const enemy = new Fighter({
             framesMax: 4
         },
         block: {
-            imageSrc: "./assets/kenji/FallFlipped.png",
+            imageSrc: "./assets/kenji/BlockFlipped.png",
             framesMax: 2
         },
 
@@ -195,7 +195,7 @@ const enemy = new Fighter({
             framesMax: 4
         },
         blockLeft: {
-            imageSrc: "./assets/kenji/Fall.png",
+            imageSrc: "./assets/kenji/Block.png",
             framesMax: 2
         }
     }
@@ -288,6 +288,7 @@ function animate() {
             enemy.switchSprites("idle");
         }
 
+        
         //Enable the jumping and falling animation for player
         if (player.velocity.y < 0) {
             player.switchSprites("jump");
@@ -357,6 +358,15 @@ function animate() {
                 console.log("blocked!");
             }
         }
+
+        if(player.isBlocking) {
+            player.switchSprites("block");
+        }
+
+        if(enemy.isBlocking) {
+            enemy.switchSprites("block");
+        }
+
 
         //End game when health of one of the players reaches 0
         if (player.health <= 0 || enemy.health <= 0) {

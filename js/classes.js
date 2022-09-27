@@ -145,8 +145,8 @@ class Fighter extends Sprite {
 
         //This is used to draw the hitboxes (mainly for debugging and tweaking them)
 
-        //  c.fillStyle = "orange";
-        //  c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        c.fillStyle = "orange";
+        c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
         // c.fillStyle = "green";
         // c.fillRect(this.position.x, this.position.y, this.width, this.height);
@@ -160,16 +160,16 @@ class Fighter extends Sprite {
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
 
             if (this.direction == "right") {
-                if(this === player){
+                if (this === player) {
                     player.attackBoxRange.speed = 10;
-                }else {
+                } else {
                     enemy.attackBoxRange.speed = 7;
                 }
-                
+
             } else if (this.direction == "left") {
-                if(this === player){
+                if (this === player) {
                     player.attackBoxRange.speed = -10;
-                }else {
+                } else {
                     enemy.attackBoxRange.speed = -7;
                 }
             }
@@ -217,20 +217,8 @@ class Fighter extends Sprite {
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
-        //If the character is blocking
-        if (this.isBlocking) {
-            if (this.direction === "right") {
-                this.image = this.sprites.blockLeft.image;
-                this.framesMax = this.sprites.blockLeft.framesMax;
-                this.frameCurrent = 0;
-                return;
-            } else if (this.direction === "left") {
-                this.image = this.sprites.block.image;
-                this.framesMax = this.sprites.block.framesMax;
-                this.frameCurrent = 0;
-                return;
-            }
-        }
+        if (this.image === this.sprites.block.image && this.frameCurrent < this.sprites.block.framesMax - 1) return;
+        if (this.image === this.sprites.blockLeft.image && this.frameCurrent < this.sprites.blockLeft.framesMax - 1) return;
 
         //For animations facing right
         if (this.direction === "right") {
@@ -270,6 +258,18 @@ class Fighter extends Sprite {
                         this.frameCurrent = 0;
                     }
                     break;
+                case "block":
+                    // if (this.image !== this.sprites.blockLeft.image) {
+                    //     // console.log("block");
+                    //     // console.log(enemy.frameCurrent);
+                    //     this.image = this.sprites.blockLeft.image;
+                    //     this.framesMax = this.sprites.blockLeft.framesMax;
+                    //     this.frameCurrent = 0;
+                    // }
+
+                    this.image = this.sprites.blockLeft.image;
+                    this.framesMax = this.sprites.blockLeft.framesMax;
+                    break;
             }
             //For animations facing left
         } else if (this.direction === "left") {
@@ -306,6 +306,13 @@ class Fighter extends Sprite {
                     if (this.image !== this.sprites.attackShortLeft.image) {
                         this.image = this.sprites.attackShortLeft.image;
                         this.framesMax = this.sprites.attackShortLeft.framesMax;
+                        this.frameCurrent = 0;
+                    }
+                    break;
+                case "block":
+                    if (this.image !== this.sprites.block.image) {
+                        this.image = this.sprites.block.image;
+                        this.framesMax = this.sprites.block.framesMax;
                         this.frameCurrent = 0;
                     }
                     break;
