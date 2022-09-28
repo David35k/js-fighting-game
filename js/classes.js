@@ -108,11 +108,13 @@ class Fighter extends Sprite {
         this.health = 100;
         this.isBlocking = false;
         this.blockDirection = "";
+        this.shootDirection = "";
         this.direction = direction;
         this.frameCurrent = 0;
         this.framesElapsed = 0;
         this.framesHold = 10;
         this.sprites = sprites;
+        this.gotDeflected = false;
 
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image();
@@ -157,6 +159,8 @@ class Fighter extends Sprite {
         if (!this.isAttackingRange) {
             this.attackBoxRange.position.x = this.position.x + this.attackBoxRange.offset.x;
             this.attackBoxRange.position.y = this.position.y + this.attackBoxRange.offset.y;
+            this.shootDirection = this.direction;
+            this.gotDeflected = false;
 
             if (this.direction == "right") {
                 if (this === player) {

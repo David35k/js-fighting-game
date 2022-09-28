@@ -219,8 +219,8 @@ const keys = {
 
 //Function that checks whether an attack got blocked or not
 function isBlocked(attacker, blocker) {
-    if (attacker.direction == "right" && blocker.direction == "right" && blocker.isBlocking ||
-        attacker.direction == "left" && blocker.direction == "left" && blocker.isBlocking) {
+    if (attacker.shootDirection == "right" && blocker.shootDirection == "right" && blocker.isBlocking ||
+        attacker.shootDirection == "left" && blocker.shootDirection == "left" && blocker.isBlocking) {
         return true;
     } else {
         return false;
@@ -288,7 +288,7 @@ function animate() {
             enemy.switchSprites("idle");
         }
 
-        
+
         //Enable the jumping and falling animation for player
         if (player.velocity.y < 0) {
             player.switchSprites("jump");
@@ -301,6 +301,43 @@ function animate() {
             enemy.switchSprites("jump");
         } else if (enemy.velocity.y > 0) {
             enemy.switchSprites("fall");
+        }
+
+        //Detect for deflection player
+        if (!enemy.gotDeflected && enemy.isAttackingRange && player.isAttacking && isDeflected({ rectangle1: enemy, rectangle2: player })) {
+            enemy.attackBoxRange.speed *= -1;
+            enemy.gotDeflected = true;
+        }
+
+        //Detect for deflection enemy
+        if (!player.gotDeflected && player.isAttackingRange && enemy.isAttacking && isDeflected({ rectangle1: player, rectangle2: enemy })) {
+            player.attackBoxRange.speed *= -1;
+            player.gotDeflected = true;
+        }
+        
+        //If the long range attack gets deflected make sure the players own projectile can hurt them
+        if(attackCollision({rectangle1: player, rectangle2: player}, "long") && player.isAttackingRange && player.gotDeflected) {
+
+            player.isAttackingRange = false;
+            if (!isBlocked(player, player)) {
+                player.health -= 30;
+                playerHealthDisplay.style.width = player.health + "%";
+                console.log("player health: " + player.health);
+            } else {
+                console.log("blocked!");
+            }
+        }
+
+        if(attackCollision({rectangle1: enemy, rectangle2: enemy}, "long") && enemy.isAttackingRange && enemy.gotDeflected) {
+
+            enemy.isAttackingRange = false;
+            if (!isBlocked(enemy, enemy)) {
+                enemy.health -= 20;
+                enemyHealthDisplay.style.width = enemy.health + "%";
+                console.log("enemy health: " + enemy.health);
+            } else {
+                console.log("blocked!");
+            }
         }
 
         //Detect for short range collision player
@@ -359,11 +396,11 @@ function animate() {
             }
         }
 
-        if(player.isBlocking) {
+        if (player.isBlocking) {
             player.switchSprites("block");
         }
 
-        if(enemy.isBlocking) {
+        if (enemy.isBlocking) {
             enemy.switchSprites("block");
         }
 
