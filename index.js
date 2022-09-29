@@ -15,6 +15,7 @@ const jumpLimitGlobal = 2;
 //Get the enemy and player health display
 const playerHealthDisplay = document.querySelector("#playerHealth");
 const enemyHealthDisplay = document.querySelector("#enemyHealth");
+const enemyEnergyDisplay = document.querySelector("#enemyEnergy");
 
 //Length of game in seconds
 let timer = 60;
@@ -361,7 +362,9 @@ function animate() {
             player.isAttackingRange = false;
             if (!isBlocked(player, enemy)) {
                 enemy.health -= 30;
+                enemy.energy -= 10;
                 enemyHealthDisplay.style.width = enemy.health + "%";
+                enemyEnergyDisplay.style.width = enemy.energy + "%";
                 console.log("enemy health: " + enemy.health);
             } else {
                 console.log("blocked!");
