@@ -123,7 +123,10 @@ const player = new Fighter({
             imageSrc: "./assets/dojaCat/Jump.png",
             framesMax: 3
         },
-    }
+    },
+    rangeDamage: 30,
+    damage: 10,
+    rangeCooldown: 3000
 });
 
 //This is what happens when you hardcode stuff
@@ -176,6 +179,10 @@ const enemy = new Fighter({
             imageSrc: "./assets/kenji/BlockFlipped.png",
             framesMax: 2
         },
+        takeHit: {
+            imageSrc: "./assets/kenji/Take hit.png",
+            framesMax: 3
+        },
 
         //Left
         idleLeft: {
@@ -201,8 +208,15 @@ const enemy = new Fighter({
         blockLeft: {
             imageSrc: "./assets/kenji/Block.png",
             framesMax: 2
+        },
+        takeHitLeft: {
+            imageSrc: "./assets/kenji/Take hit.png",
+            framesMax: 3
         }
-    }
+    },
+    rangeDamage: 20,
+    damage: 15,
+    rangeCooldown: 1500
 });
 
 //The keys used for horizontal movement
@@ -323,8 +337,7 @@ function animate() {
 
             player.isAttackingRange = false;
             if (!isBlocked(player, player)) {
-                player.health -= 30;
-                playerHealthDisplay.style.width = player.health + "%";
+                player.takeHit(player.rangeDamage);
                 console.log("player health: " + player.health);
             } else {
                 console.log("blocked!");
@@ -335,7 +348,7 @@ function animate() {
 
             enemy.isAttackingRange = false;
             if (!isBlocked(enemy, enemy)) {
-                enemy.health -= 20;
+                enemy.takeHit(enemy.rangeDamage);
                 enemyHealthDisplay.style.width = enemy.health + "%";
                 console.log("enemy health: " + enemy.health);
             } else {
@@ -349,8 +362,7 @@ function animate() {
 
             player.isAttacking = false;
             if (!isBlocked(player, enemy)) {
-                enemy.health -= 10;
-                enemyHealthDisplay.style.width = enemy.health + "%";
+                enemy.takeHit(player.damage);
                 console.log("enemy health: " + enemy.health);
             } else {
                 console.log("blocked!");
@@ -363,8 +375,7 @@ function animate() {
 
             player.isAttackingRange = false;
             if (!isBlocked(player, enemy)) {
-                enemy.health -= 30;
-                enemyHealthDisplay.style.width = enemy.health + "%";
+                enemy.takeHit(player.rangeDamage);
                 console.log("enemy health: " + enemy.health);
             } else {
                 console.log("blocked!");
@@ -377,8 +388,7 @@ function animate() {
 
             enemy.isAttacking = false;
             if (!isBlocked(enemy, player)) {
-                player.health -= 10;
-                playerHealthDisplay.style.width = player.health + "%";
+                player.takeHit(enemy.damage);
                 console.log("player health: " + player.health);
             } else {
                 console.log("blocked!");
@@ -391,8 +401,7 @@ function animate() {
 
             enemy.isAttackingRange = false;
             if (!isBlocked(enemy, player)) {
-                player.health -= 20;
-                playerHealthDisplay.style.width = player.health + "%";
+                player.takeHit(enemy.rangeDamage);
                 console.log("player health: " + player.health);
             } else {
                 console.log("blocked!");
@@ -407,9 +416,11 @@ function animate() {
             enemy.switchSprites("block");
         }
 
-        //Update the energy displays
+        //Update the energy and health displays
         playerEnergyDisplay.style.width = player.energy + "%";
         enemyEnergyDisplay.style.width = enemy.energy + "%";
+        playerHealthDisplay.style.width = player.health + "%";
+        enemyHealthDisplay.style.width = enemy.health + "%";
 
         //End game when health of one of the players reaches 0
         if (player.health <= 0 || enemy.health <= 0) {

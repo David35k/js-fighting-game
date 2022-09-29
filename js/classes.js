@@ -60,7 +60,10 @@ class Fighter extends Sprite {
         scale = 1,
         framesMax = 1,
         offset = { x: 0, y: 0 },
-        sprites
+        sprites,
+        rangeDamage,
+        damage,
+        rangeCooldown
     }) {
         super({
             position,
@@ -103,7 +106,7 @@ class Fighter extends Sprite {
         };
         this.isAttackingRange = false;
         this.rangeAttackRecharge = false;
-        this.rechargeTime = 3000;
+        this.rechargeTime = rangeCooldown;
         this.jumpLimit = jumpLimitGlobal;
         this.health = 100;
         this.isBlocking = false;
@@ -118,6 +121,8 @@ class Fighter extends Sprite {
         this.energy = 100;
         this.energyCooldown = 3000;
         this.rechargingEnergy = false;
+        this.rangeDamage = rangeDamage;
+        this.damage = damage;
 
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image();
@@ -230,6 +235,9 @@ class Fighter extends Sprite {
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
+        if (enemy.image === enemy.sprites.takeHit.image && enemy.frameCurrent < enemy.sprites.takeHit.framesMax - 1) return;
+        if (enemy.image === enemy.sprites.takeHitLeft.image && enemy.frameCurrent < enemy.sprites.takeHitLeft.framesMax - 1) return;
+
         //For animations facing right
         if (this.direction === "right") {
 
@@ -267,6 +275,13 @@ class Fighter extends Sprite {
                         if (this.image !== this.sprites.attackShort.image) {
                             this.image = this.sprites.attackShort.image;
                             this.framesMax = this.sprites.attackShort.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
+                    case "takeHit":
+                        if (this.image !== this.sprites.takeHit.image) {
+                            this.image = this.sprites.takeHit.image;
+                            this.framesMax = this.sprites.takeHit.framesMax;
                             this.frameCurrent = 0;
                         }
                         break;
@@ -320,6 +335,13 @@ class Fighter extends Sprite {
                             this.frameCurrent = 0;
                         }
                         break;
+                    case "takeHit":
+                        if (this.image !== this.sprites.takeHitLeft.image) {
+                            this.image = this.sprites.takeHitLeft.image;
+                            this.framesMax = this.sprites.takeHitLeft.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
                 }
             } else {
                 switch (sprite) {
@@ -345,9 +367,10 @@ class Fighter extends Sprite {
 
     //Enables the players to do a long range attack
     attackRange() {
-        if (!this.isAttackingRange && !this.rangeAttackRecharge) {
+        if (!this.isAttackingRange && !this.rangeAttackRecharge && this.energy >= 30) {
             this.isAttackingRange = true;
             this.rangeAttackRecharge = true;
+            this.energy -= 30;
             setTimeout(() => {
                 this.rangeAttackRecharge = false;
             }, this.rechargeTime)
@@ -375,18 +398,23 @@ class Fighter extends Sprite {
     changeEnergy() {
 
         if (this.isBlocking) {
-            this.energy -= 0.25;
+            this.energy -= 0.5;
+        }
+
+        if (this.isAttackingRange) {
+            this.rechargingEnergy = false;
         }
 
         if (this.rechargingEnergy && this.energy < 100) {
-            this.energy += 0.5;
+            this.energy += 0.75;
         } else {
             this.rechargingEnergy = false;
             this.energyRecharge(this.energy);
         }
 
-        console.log(enemy.rechargingEnergy);
-        console.log(enemy.energy);
+        if (this.energy > 100) {
+            this.energy = 100;
+        }
     }
 
     energyRecharge(checkEnergy) {
@@ -395,5 +423,10 @@ class Fighter extends Sprite {
                 this.rechargingEnergy = true;
             }
         }, this.energyCooldown)
+    }
+
+    takeHit(amount) {
+        this.health -= amount;
+        this.switchSprites("takeHit");
     }
 }
