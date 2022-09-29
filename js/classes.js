@@ -116,6 +116,8 @@ class Fighter extends Sprite {
         this.sprites = sprites;
         this.gotDeflected = false;
         this.energy = 100;
+        this.energyCooldown = 3000;
+        this.rechargingEnergy = false;
 
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image();
@@ -145,7 +147,7 @@ class Fighter extends Sprite {
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-        //This is used to draw the hitboxes (mainly for debugging and tweaking them)
+        //This is used to draw the hitboxes
 
         c.fillStyle = "orange";
         c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
@@ -189,6 +191,11 @@ class Fighter extends Sprite {
             this.isAttackingRange = false;
         }
 
+        //If they are already blocking when they run out of energy
+        if (this.isBlocking && this.energy <= 0) {
+            this.isBlocking = false;
+        }
+
         //If the players are blocking make them move slower
         if (!this.isBlocking) {
             this.position.y += this.velocity.y;
@@ -203,6 +210,8 @@ class Fighter extends Sprite {
                 this.blockDirection = "right";
             }
         }
+
+        this.changeEnergy();
 
         //Make gravity affect the players
         if (this.position.y + this.height + this.velocity.y >= canvas.height - 95) {
@@ -355,6 +364,36 @@ class Fighter extends Sprite {
 
     //Block function
     block() {
-        this.isBlocking = true;
+        if (!this.rechargingEnergy && this.energy > 0) {
+            this.isBlocking = true;
+        } else {
+            this.isBlocking = false;
+        }
+    }
+
+    //A function to change the energy
+    changeEnergy() {
+
+        if (this.isBlocking) {
+            this.energy -= 0.25;
+        }
+
+        if (this.rechargingEnergy && this.energy < 100) {
+            this.energy += 0.5;
+        } else {
+            this.rechargingEnergy = false;
+            this.energyRecharge(this.energy);
+        }
+
+        console.log(enemy.rechargingEnergy);
+        console.log(enemy.energy);
+    }
+
+    energyRecharge(checkEnergy) {
+        setTimeout(() => {
+            if (this.energy === checkEnergy && this.energy < 100) {
+                this.rechargingEnergy = true;
+            }
+        }, this.energyCooldown)
     }
 }

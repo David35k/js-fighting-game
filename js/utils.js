@@ -36,7 +36,7 @@ function attackCollision({ rectangle1, rectangle2 }, type) {
 }
 
 //A function that will detect whether there has been a deflection
-function isDeflected({rectangle1, rectangle2}) {
+function isDeflected({ rectangle1, rectangle2 }) {
     return (
         rectangle1.attackBoxRange.position.x + rectangle1.attackBoxRange.size >= rectangle2.attackBox.position.x &&
         rectangle1.attackBoxRange.position.x <= rectangle2.attackBox.position.x + rectangle2.attackBox.width &&

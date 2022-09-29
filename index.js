@@ -15,6 +15,9 @@ const jumpLimitGlobal = 2;
 //Get the enemy and player health display
 const playerHealthDisplay = document.querySelector("#playerHealth");
 const enemyHealthDisplay = document.querySelector("#enemyHealth");
+
+//Get the enemy and player energy display
+const playerEnergyDisplay = document.querySelector("#playerEnergy");
 const enemyEnergyDisplay = document.querySelector("#enemyEnergy");
 
 //Length of game in seconds
@@ -289,7 +292,6 @@ function animate() {
             enemy.switchSprites("idle");
         }
 
-
         //Enable the jumping and falling animation for player
         if (player.velocity.y < 0) {
             player.switchSprites("jump");
@@ -315,9 +317,9 @@ function animate() {
             player.attackBoxRange.speed *= -1;
             player.gotDeflected = true;
         }
-        
+
         //If the long range attack gets deflected make sure the players own projectile can hurt them
-        if(attackCollision({rectangle1: player, rectangle2: player}, "long") && player.isAttackingRange && player.gotDeflected) {
+        if (attackCollision({ rectangle1: player, rectangle2: player }, "long") && player.isAttackingRange && player.gotDeflected) {
 
             player.isAttackingRange = false;
             if (!isBlocked(player, player)) {
@@ -329,7 +331,7 @@ function animate() {
             }
         }
 
-        if(attackCollision({rectangle1: enemy, rectangle2: enemy}, "long") && enemy.isAttackingRange && enemy.gotDeflected) {
+        if (attackCollision({ rectangle1: enemy, rectangle2: enemy }, "long") && enemy.isAttackingRange && enemy.gotDeflected) {
 
             enemy.isAttackingRange = false;
             if (!isBlocked(enemy, enemy)) {
@@ -362,9 +364,7 @@ function animate() {
             player.isAttackingRange = false;
             if (!isBlocked(player, enemy)) {
                 enemy.health -= 30;
-                enemy.energy -= 10;
                 enemyHealthDisplay.style.width = enemy.health + "%";
-                enemyEnergyDisplay.style.width = enemy.energy + "%";
                 console.log("enemy health: " + enemy.health);
             } else {
                 console.log("blocked!");
@@ -407,6 +407,9 @@ function animate() {
             enemy.switchSprites("block");
         }
 
+        //Update the energy displays
+        playerEnergyDisplay.style.width = player.energy + "%";
+        enemyEnergyDisplay.style.width = enemy.energy + "%";
 
         //End game when health of one of the players reaches 0
         if (player.health <= 0 || enemy.health <= 0) {
