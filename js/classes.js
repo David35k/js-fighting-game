@@ -115,6 +115,7 @@ class Fighter extends Sprite {
         this.framesHold = 10;
         this.sprites = sprites;
         this.gotDeflected = false;
+        this.energy = 100;
 
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image();
@@ -219,9 +220,6 @@ class Fighter extends Sprite {
         //If the attack animations are not finished do not interrupt them
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
-
-        if (this.image === this.sprites.block.image && this.frameCurrent < this.sprites.block.framesMax - 1) return;
-        if (this.image === this.sprites.blockLeft.image && this.frameCurrent < this.sprites.blockLeft.framesMax - 1) return;
 
         //For animations facing right
         if (this.direction === "right") {

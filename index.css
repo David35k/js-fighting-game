@@ -20,37 +20,55 @@
 }
 
 .healthParent {
+    display: flex;
+    justify-content: flex-end;;
     position: relative;
-    height: 25px;
+    height: 100%;
     width: 100%;
+    padding-bottom: 10px;
 }
 
 .healthParentPlayer {
     display: flex;
     justify-content: flex-end;
     position: relative;
-    height: 25px;
+    height: 100%;
     width: 100%;
+    padding-bottom: 10px;
+}
+
+.energyParentPlayer {
+    display: flex;
+    position: relative;
+    height: 100%;
+    width: 50%;
+}
+
+.energyParent {
+    display: flex;
+    position: relative;
+    height: 100%;
+    width: 50%;
 }
 
 .health {
-
-    background-color: blue;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-.healthPlayer {
-
     background-color: blue;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     width: 100%;
+    height: 25px;
+}
+
+.healthPlayer {
+    background-color: blue;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 25px;
 }
 
 .healthBg {
@@ -58,8 +76,19 @@
     height: 25px;
 }
 
+.energyBg {
+    background-color: purple;
+    height: 25px;
+}
+
 .healthBgPlayer {
     background-color: yellow;
+    height: 25px;
+    width: 100%;
+}
+
+.energyBgPlayer {
+    background-color: purple;
     height: 25px;
     width: 100%;
 }
@@ -96,4 +125,24 @@
 canvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+}
+
+.playerDiv {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    height: 40px;
+    width: 100%;
+}
+
+.enemyDiv {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    height: 40px;
+    width: 100%;
 }

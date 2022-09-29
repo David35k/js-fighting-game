@@ -7,22 +7,41 @@
     <!-- Main container that overlays the canvas and contains the timer and health displays-->
     <div class="containerRelative">
         <div class="containerAbsolute">
-            <!-- Player Health -->
-            <div class="healthParentPlayer">
-                <div class="healthPlayer" id="playerHealth"></div>
-                <div class="healthBgPlayer"></div>
+
+            <div class="playerDiv">
+                <!-- Player Health -->
+                <div class="healthParentPlayer">
+                    <div class="healthPlayer" id="playerHealth"></div>
+                    <div class="healthBgPlayer"></div>
+                </div>
+
+                <!-- Player Energy -->
+                <div class="energyParentPlayer">
+                    <div class="healthPlayer" id="playerEnergy"></div>
+                    <div class="energyBgPlayer"></div>
+                </div>
             </div>
+
 
             <!-- Timer -->
             <div class="timer">
                 <p id="timeText">10</p>
             </div>
 
-            <!-- Enemy Health -->
-            <div class="healthParent">
-                <div class="health" id="enemyHealth"></div>
-                <div class="healthBg"></div>
+            <div class="enemyDiv">
+                <!-- Enemy Health -->
+                <div class="healthParent">
+                    <div class="health" id="enemyHealth"></div>
+                    <div class="healthBg"></div>
+                </div>
+
+                <!-- Enemy Energy -->
+                <div class="energyParent">
+                    <div class="health" id="enemyEnergy"></div>
+                    <div class="energyBg"></div>
+                </div>
             </div>
+
         </div>
 
         <!-- Game end text -->
