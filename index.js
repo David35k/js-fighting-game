@@ -105,6 +105,10 @@ const player = new Fighter({
             imageSrc: "./assets/dojaCat/Take hit.png",
             framesMax: 3
         },
+        death: {
+            imageSrc: "./assets/dojaCat/Fall.png",
+            framesMax: 3
+        },
 
         //Left
         idleLeft: {
@@ -137,6 +141,10 @@ const player = new Fighter({
         },
         takeHitLeft: {
             imageSrc: "./assets/dojaCat/Take hit.png",
+            framesMax: 3
+        },
+        deathLeft: {
+            imageSrc: "./assets/dojaCat/FallFlipped.png",
             framesMax: 3
         },
     },
@@ -203,6 +211,10 @@ const enemy = new Fighter({
             imageSrc: "./assets/kenji/Take hitFlipped.png",
             framesMax: 3
         },
+        death: {
+            imageSrc: "./assets/kenji/Death.png",
+            framesMax: 7
+        },
 
         //Left
         idleLeft: {
@@ -236,6 +248,10 @@ const enemy = new Fighter({
         takeHitLeft: {
             imageSrc: "./assets/kenji/Take hit.png",
             framesMax: 3
+        },
+        deathLeft: {
+            imageSrc: "./assets/kenji/Death.png",
+            framesMax: 7
         }
     },
     rangeDamage: 20,

@@ -33,6 +33,7 @@ class Sprite {
     update() {
         this.draw();
         this.animateFrames();
+
     }
 
     //This is in charge of changing all the frames and creating animations
@@ -123,6 +124,7 @@ class Fighter extends Sprite {
         this.rechargingEnergy = false;
         this.rangeDamage = rangeDamage;
         this.damage = damage;
+        this.dead = false;
 
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image();
@@ -135,7 +137,9 @@ class Fighter extends Sprite {
 
         //Draw the sprites onto the canvas and animate them
         this.draw();
-        this.animateFrames();
+        if (!this.dead) this.animateFrames();
+
+
 
         //Change offsets depending on direction so players can attack in both directions
         if (this.direction == "right") {
@@ -235,6 +239,17 @@ class Fighter extends Sprite {
     //A function used to switch to the proper animation at the correct time
     switchSprites(sprite) {
 
+        console.log(enemy.image);
+        console.log(enemy.sprites.deathLeft.image);
+
+        if (this.image === this.sprites.death.image || this.image === this.sprites.deathLeft.image) {
+            console.log("it works now XD");
+            if (this.frameCurrent === this.sprites.death.framesMax - 1 || this.frameCurrent === this.sprites.deathLeft.framesMax - 1) {
+                this.dead = true;
+            }
+            return;
+        }
+
         //These animations should override all the others
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
@@ -296,6 +311,13 @@ class Fighter extends Sprite {
                         if (this.image !== this.sprites.takeHit.image) {
                             this.image = this.sprites.takeHit.image;
                             this.framesMax = this.sprites.takeHit.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
+                    case "death":
+                        if (this.image !== this.sprites.death.image) {
+                            this.image = this.sprites.death.image;
+                            this.framesMax = this.sprites.death.framesMax;
                             this.frameCurrent = 0;
                         }
                         break;
@@ -363,6 +385,13 @@ class Fighter extends Sprite {
                             this.frameCurrent = 0;
                         }
                         break;
+                    case "death":
+                        if (this.image !== this.sprites.deathLeft.image) {
+                            this.image = this.sprites.deathLeft.image;
+                            this.framesMax = this.sprites.deathLeft.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
                 }
             } else {
                 switch (sprite) {
@@ -388,14 +417,14 @@ class Fighter extends Sprite {
 
     //Enables the players to do a long range attack
     attackRange() {
-        if (!this.isAttackingRange && !this.rangeAttackRecharge && this.energy >= 30) {
+        if (!this.isAttackingRange && !this.rangeAttackRecharge && this.energy >= 30 && !this.isBlocking) {
             this.isAttackingRange = true;
             this.rangeAttackRecharge = true;
             this.energy -= 30;
             this.switchSprites("attackLong");
             setTimeout(() => {
                 this.rangeAttackRecharge = false;
-            }, this.rechargeTime)
+            }, this.rechargeTime);
         }
     }
 
@@ -444,15 +473,17 @@ class Fighter extends Sprite {
             if (this.energy === checkEnergy && this.energy < 100) {
                 this.rechargingEnergy = true;
             }
-        }, this.energyCooldown)
+        }, this.energyCooldown);
     }
 
     takeHit(amount) {
         this.health -= amount;
-        this.switchSprites("takeHit");
 
-        if (this.health < 0) {
+        if (this.health <= 0) {
             this.health = 0;
+            this.switchSprites("death");
+        } else {
+            this.switchSprites("takeHit");
         }
     }
 }
