@@ -87,7 +87,7 @@ class Fighter extends Sprite {
                 x: 0,
                 y: 50
             },
-            width: 175,
+            width: 225,
             height: 50
         };
         this.color = color;
@@ -139,11 +139,12 @@ class Fighter extends Sprite {
 
         //Change offsets depending on direction so players can attack in both directions
         if (this.direction == "right") {
-            this.attackBox.offset.x = 0;
+            player.attackBox.offset.x = 0;
+            enemy.attackBox.offset.x = -35;
             this.attackBoxRange.offset.x = 55;
         }
         if (this.direction == "left") {
-            enemy.attackBox.offset.x = 125;
+            enemy.attackBox.offset.x = 200;
             player.attackBox.offset.x = 50;
             this.attackBoxRange.offset.x = -55;
         }
@@ -154,12 +155,15 @@ class Fighter extends Sprite {
 
         //This is used to draw the hitboxes
 
+        //Range attack
         c.fillStyle = "orange";
         c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
 
+        //Player hitboxes
         // c.fillStyle = "green";
         // c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
+        //Short range attack
         // c.fillStyle = "purple";
         // c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
 
@@ -235,8 +239,8 @@ class Fighter extends Sprite {
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
 
-        if (enemy.image === enemy.sprites.takeHit.image && enemy.frameCurrent < enemy.sprites.takeHit.framesMax - 1) return;
-        if (enemy.image === enemy.sprites.takeHitLeft.image && enemy.frameCurrent < enemy.sprites.takeHitLeft.framesMax - 1) return;
+        if (this.image === this.sprites.takeHit.image && this.frameCurrent < this.sprites.takeHit.framesMax - 1) return;
+        if (this.image === this.sprites.takeHitLeft.image && this.frameCurrent < this.sprites.takeHitLeft.framesMax - 1) return;
 
         //For animations facing right
         if (this.direction === "right") {
@@ -428,5 +432,9 @@ class Fighter extends Sprite {
     takeHit(amount) {
         this.health -= amount;
         this.switchSprites("takeHit");
+
+        if(this.health < 0) {
+            this.health = 0;
+        }
     }
 }

@@ -94,7 +94,11 @@ const player = new Fighter({
             framesMax: 4
         },
         block: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/Block.png",
+            framesMax: 3
+        },
+        takeHit: {
+            imageSrc: "./assets/dojaCat/Take hit.png",
             framesMax: 3
         },
 
@@ -120,7 +124,11 @@ const player = new Fighter({
             framesMax: 4
         },
         blockLeft: {
-            imageSrc: "./assets/dojaCat/Jump.png",
+            imageSrc: "./assets/dojaCat/Block.png",
+            framesMax: 3
+        },
+        takeHitLeft: {
+            imageSrc: "./assets/dojaCat/Take hit.png",
             framesMax: 3
         },
     },
@@ -180,7 +188,7 @@ const enemy = new Fighter({
             framesMax: 2
         },
         takeHit: {
-            imageSrc: "./assets/kenji/Take hit.png",
+            imageSrc: "./assets/kenji/Take hitFlipped.png",
             framesMax: 3
         },
 
