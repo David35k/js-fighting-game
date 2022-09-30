@@ -93,6 +93,10 @@ const player = new Fighter({
             imageSrc: "./assets/dojaCat/Attack1.png",
             framesMax: 4
         },
+        attackLong: {
+            imageSrc: "./assets/dojaCat/Attack1.png",
+            framesMax: 4
+        },
         block: {
             imageSrc: "./assets/dojaCat/Block.png",
             framesMax: 3
@@ -120,6 +124,10 @@ const player = new Fighter({
             framesMax: 3
         },
         attackShortLeft: {
+            imageSrc: "./assets/dojaCat/Attack1Flipped.png",
+            framesMax: 4
+        },
+        attackLongLeft: {
             imageSrc: "./assets/dojaCat/Attack1Flipped.png",
             framesMax: 4
         },
@@ -183,6 +191,10 @@ const enemy = new Fighter({
             imageSrc: "./assets/kenji/Attack1Flipped.png",
             framesMax: 4
         },
+        attackLong: {
+            imageSrc: "./assets/kenji/Attack2Flipped.png",
+            framesMax: 4
+        },
         block: {
             imageSrc: "./assets/kenji/BlockFlipped.png",
             framesMax: 2
@@ -211,6 +223,10 @@ const enemy = new Fighter({
         },
         attackShortLeft: {
             imageSrc: "./assets/kenji/Attack1.png",
+            framesMax: 4
+        },
+        attackLongLeft: {
+            imageSrc: "./assets/kenji/Attack2.png",
             framesMax: 4
         },
         blockLeft: {

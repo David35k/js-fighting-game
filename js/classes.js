@@ -235,9 +235,12 @@ class Fighter extends Sprite {
     //A function used to switch to the proper animation at the correct time
     switchSprites(sprite) {
 
-        //If the attack animations are not finished do not interrupt them
+        //These animations should override all the others
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
+
+        if (this.image === this.sprites.attackLong.image && this.frameCurrent < this.sprites.attackLong.framesMax - 1) return;
+        if (this.image === this.sprites.attackLongLeft.image && this.frameCurrent < this.sprites.attackLongLeft.framesMax - 1) return;
 
         if (this.image === this.sprites.takeHit.image && this.frameCurrent < this.sprites.takeHit.framesMax - 1) return;
         if (this.image === this.sprites.takeHitLeft.image && this.frameCurrent < this.sprites.takeHitLeft.framesMax - 1) return;
@@ -279,6 +282,13 @@ class Fighter extends Sprite {
                         if (this.image !== this.sprites.attackShort.image) {
                             this.image = this.sprites.attackShort.image;
                             this.framesMax = this.sprites.attackShort.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
+                    case "attackLong":
+                        if (this.image !== this.sprites.attackLong.image) {
+                            this.image = this.sprites.attackLong.image;
+                            this.framesMax = this.sprites.attackLong.framesMax;
                             this.frameCurrent = 0;
                         }
                         break;
@@ -339,6 +349,13 @@ class Fighter extends Sprite {
                             this.frameCurrent = 0;
                         }
                         break;
+                    case "attackLong":
+                        if (this.image !== this.sprites.attackLongLeft.image) {
+                            this.image = this.sprites.attackLongLeft.image;
+                            this.framesMax = this.sprites.attackLongLeft.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
                     case "takeHit":
                         if (this.image !== this.sprites.takeHitLeft.image) {
                             this.image = this.sprites.takeHitLeft.image;
@@ -362,8 +379,8 @@ class Fighter extends Sprite {
 
     //Enables the players to do a short range attack
     attack() {
-        this.switchSprites("attackShort");
         this.isAttacking = true;
+        this.switchSprites("attackShort");
         setTimeout(() => {
             this.isAttacking = false;
         }, 100);
@@ -375,6 +392,7 @@ class Fighter extends Sprite {
             this.isAttackingRange = true;
             this.rangeAttackRecharge = true;
             this.energy -= 30;
+            this.switchSprites("attackLong");
             setTimeout(() => {
                 this.rangeAttackRecharge = false;
             }, this.rechargeTime)
@@ -433,7 +451,7 @@ class Fighter extends Sprite {
         this.health -= amount;
         this.switchSprites("takeHit");
 
-        if(this.health < 0) {
+        if (this.health < 0) {
             this.health = 0;
         }
     }
