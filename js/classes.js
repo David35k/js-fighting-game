@@ -139,8 +139,6 @@ class Fighter extends Sprite {
         this.draw();
         if (!this.dead) this.animateFrames();
 
-
-
         //Change offsets depending on direction so players can attack in both directions
         if (this.direction == "right") {
             player.attackBox.offset.x = 0;
@@ -239,17 +237,12 @@ class Fighter extends Sprite {
     //A function used to switch to the proper animation at the correct time
     switchSprites(sprite) {
 
-        console.log(enemy.image);
-        console.log(enemy.sprites.deathLeft.image);
-
         if (this.image === this.sprites.death.image || this.image === this.sprites.deathLeft.image) {
-            console.log("it works now XD");
             if (this.frameCurrent === this.sprites.death.framesMax - 1 || this.frameCurrent === this.sprites.deathLeft.framesMax - 1) {
                 this.dead = true;
             }
             return;
         }
-
         //These animations should override all the others
         if (this.image === this.sprites.attackShort.image && this.frameCurrent < this.sprites.attackShort.framesMax - 1) return;
         if (this.image === this.sprites.attackShortLeft.image && this.frameCurrent < this.sprites.attackShortLeft.framesMax - 1) return;
@@ -330,7 +323,16 @@ class Fighter extends Sprite {
                             this.framesMax = this.sprites.blockLeft.framesMax;
                             this.frameCurrent = 0;
                         }
+                        break;
+                    case "death":
+                        if (this.image !== this.sprites.death.image) {
+                            this.image = this.sprites.death.image;
+                            this.framesMax = this.sprites.death.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
                 }
+
             }
             //For animations facing left
         } else if (this.direction === "left") {
@@ -401,6 +403,14 @@ class Fighter extends Sprite {
                             this.framesMax = this.sprites.block.framesMax;
                             this.frameCurrent = 0;
                         }
+                        break;
+                    case "death":
+                        if (this.image !== this.sprites.deathLeft.image) {
+                            this.image = this.sprites.deathLeft.image;
+                            this.framesMax = this.sprites.deathLeft.framesMax;
+                            this.frameCurrent = 0;
+                        }
+                        break;
                 }
             }
         }

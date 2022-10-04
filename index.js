@@ -212,7 +212,7 @@ const enemy = new Fighter({
             framesMax: 3
         },
         death: {
-            imageSrc: "./assets/kenji/Death.png",
+            imageSrc: "./assets/kenji/DeathFlipped.png",
             framesMax: 7
         },
 
@@ -318,154 +318,151 @@ function animate() {
     player.velocity.x = 0;
     enemy.velocity.x = 0;
 
-    //Only do this stuff if the game is not over
-    if (!gameOver) {
-        //Player movement
-        if (keys.d.pressed && player.lastKey === "d") {
-            player.velocity.x = player.speed;
-            player.direction = "right";
-            player.switchSprites("run");
-        } else if (keys.a.pressed && player.lastKey === "a") {
-            player.velocity.x = -player.speed;
-            player.direction = "left";
-            player.switchSprites("run");
+    //Player movement
+    if (keys.d.pressed && player.lastKey === "d") {
+        player.velocity.x = player.speed;
+        player.direction = "right";
+        player.switchSprites("run");
+    } else if (keys.a.pressed && player.lastKey === "a") {
+        player.velocity.x = -player.speed;
+        player.direction = "left";
+        player.switchSprites("run");
+    } else {
+        player.switchSprites("idle");
+    }
+
+    //Enemy movement
+    if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
+        enemy.velocity.x = enemy.speed;
+        enemy.direction = "right";
+        enemy.switchSprites("run");
+    } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
+        enemy.velocity.x = -enemy.speed;
+        enemy.direction = "left";
+        enemy.switchSprites("run");
+    } else {
+        enemy.switchSprites("idle");
+    }
+
+    //Enable the jumping and falling animation for player
+    if (player.velocity.y < 0) {
+        player.switchSprites("jump");
+    } else if (player.velocity.y > 0) {
+        player.switchSprites("fall");
+    }
+
+    //Enable the jumping and falling animtation for enemy
+    if (enemy.velocity.y < 0) {
+        enemy.switchSprites("jump");
+    } else if (enemy.velocity.y > 0) {
+        enemy.switchSprites("fall");
+    }
+
+    //Detect for deflection player
+    if (!enemy.gotDeflected && enemy.isAttackingRange && player.isAttacking && isDeflected({ rectangle1: enemy, rectangle2: player })) {
+        enemy.attackBoxRange.speed *= -1;
+        enemy.gotDeflected = true;
+    }
+
+    //Detect for deflection enemy
+    if (!player.gotDeflected && player.isAttackingRange && enemy.isAttacking && isDeflected({ rectangle1: player, rectangle2: enemy })) {
+        player.attackBoxRange.speed *= -1;
+        player.gotDeflected = true;
+    }
+
+    //If the long range attack gets deflected make sure the players own projectile can hurt them
+    if (attackCollision({ rectangle1: player, rectangle2: player }, "long") && player.isAttackingRange && player.gotDeflected) {
+
+        player.isAttackingRange = false;
+        if (!isBlocked(player, player)) {
+            player.takeHit(player.rangeDamage);
+            console.log("player health: " + player.health);
         } else {
-            player.switchSprites("idle");
+            console.log("blocked!");
         }
+    }
 
-        //Enemy movement
-        if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
-            enemy.velocity.x = enemy.speed;
-            enemy.direction = "right";
-            enemy.switchSprites("run");
-        } else if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
-            enemy.velocity.x = -enemy.speed;
-            enemy.direction = "left";
-            enemy.switchSprites("run");
+    if (attackCollision({ rectangle1: enemy, rectangle2: enemy }, "long") && enemy.isAttackingRange && enemy.gotDeflected) {
+
+        enemy.isAttackingRange = false;
+        if (!isBlocked(enemy, enemy)) {
+            enemy.takeHit(enemy.rangeDamage);
+            enemyHealthDisplay.style.width = enemy.health + "%";
+            console.log("enemy health: " + enemy.health);
         } else {
-            enemy.switchSprites("idle");
+            console.log("blocked!");
         }
+    }
 
-        //Enable the jumping and falling animation for player
-        if (player.velocity.y < 0) {
-            player.switchSprites("jump");
-        } else if (player.velocity.y > 0) {
-            player.switchSprites("fall");
+    //Detect for short range collision player
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
+        player.isAttacking) {
+
+        player.isAttacking = false;
+        if (!isBlocked(player, enemy)) {
+            enemy.takeHit(player.damage);
+            console.log("enemy health: " + enemy.health);
+        } else {
+            console.log("blocked!");
         }
+    }
 
-        //Enable the jumping and falling animtation for enemy
-        if (enemy.velocity.y < 0) {
-            enemy.switchSprites("jump");
-        } else if (enemy.velocity.y > 0) {
-            enemy.switchSprites("fall");
+    //Detect for long range collision player
+    if (attackCollision({ rectangle1: player, rectangle2: enemy }, "long") &&
+        player.isAttackingRange) {
+
+        player.isAttackingRange = false;
+        if (!isBlocked(player, enemy)) {
+            enemy.takeHit(player.rangeDamage);
+            console.log("enemy health: " + enemy.health);
+        } else {
+            console.log("blocked!");
         }
+    }
 
-        //Detect for deflection player
-        if (!enemy.gotDeflected && enemy.isAttackingRange && player.isAttacking && isDeflected({ rectangle1: enemy, rectangle2: player })) {
-            enemy.attackBoxRange.speed *= -1;
-            enemy.gotDeflected = true;
+    //Detect for short range collision enemy
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "short") &&
+        enemy.isAttacking) {
+
+        enemy.isAttacking = false;
+        if (!isBlocked(enemy, player)) {
+            player.takeHit(enemy.damage);
+            console.log("player health: " + player.health);
+        } else {
+            console.log("blocked!");
         }
+    }
 
-        //Detect for deflection enemy
-        if (!player.gotDeflected && player.isAttackingRange && enemy.isAttacking && isDeflected({ rectangle1: player, rectangle2: enemy })) {
-            player.attackBoxRange.speed *= -1;
-            player.gotDeflected = true;
+    //Detect for long range collision enemy
+    if (attackCollision({ rectangle1: enemy, rectangle2: player }, "long") &&
+        enemy.isAttackingRange) {
+
+        enemy.isAttackingRange = false;
+        if (!isBlocked(enemy, player)) {
+            player.takeHit(enemy.rangeDamage);
+            console.log("player health: " + player.health);
+        } else {
+            console.log("blocked!");
         }
+    }
 
-        //If the long range attack gets deflected make sure the players own projectile can hurt them
-        if (attackCollision({ rectangle1: player, rectangle2: player }, "long") && player.isAttackingRange && player.gotDeflected) {
+    if (player.isBlocking) {
+        player.switchSprites("block");
+    }
 
-            player.isAttackingRange = false;
-            if (!isBlocked(player, player)) {
-                player.takeHit(player.rangeDamage);
-                console.log("player health: " + player.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
+    if (enemy.isBlocking) {
+        enemy.switchSprites("block");
+    }
 
-        if (attackCollision({ rectangle1: enemy, rectangle2: enemy }, "long") && enemy.isAttackingRange && enemy.gotDeflected) {
+    //Update the energy and health displays
+    playerEnergyDisplay.style.width = player.energy + "%";
+    enemyEnergyDisplay.style.width = enemy.energy + "%";
+    playerHealthDisplay.style.width = player.health + "%";
+    enemyHealthDisplay.style.width = enemy.health + "%";
 
-            enemy.isAttackingRange = false;
-            if (!isBlocked(enemy, enemy)) {
-                enemy.takeHit(enemy.rangeDamage);
-                enemyHealthDisplay.style.width = enemy.health + "%";
-                console.log("enemy health: " + enemy.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
-
-        //Detect for short range collision player
-        if (attackCollision({ rectangle1: player, rectangle2: enemy }, "short") &&
-            player.isAttacking) {
-
-            player.isAttacking = false;
-            if (!isBlocked(player, enemy)) {
-                enemy.takeHit(player.damage);
-                console.log("enemy health: " + enemy.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
-
-        //Detect for long range collision player
-        if (attackCollision({ rectangle1: player, rectangle2: enemy }, "long") &&
-            player.isAttackingRange) {
-
-            player.isAttackingRange = false;
-            if (!isBlocked(player, enemy)) {
-                enemy.takeHit(player.rangeDamage);
-                console.log("enemy health: " + enemy.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
-
-        //Detect for short range collision enemy
-        if (attackCollision({ rectangle1: enemy, rectangle2: player }, "short") &&
-            enemy.isAttacking) {
-
-            enemy.isAttacking = false;
-            if (!isBlocked(enemy, player)) {
-                player.takeHit(enemy.damage);
-                console.log("player health: " + player.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
-
-        //Detect for long range collision enemy
-        if (attackCollision({ rectangle1: enemy, rectangle2: player }, "long") &&
-            enemy.isAttackingRange) {
-
-            enemy.isAttackingRange = false;
-            if (!isBlocked(enemy, player)) {
-                player.takeHit(enemy.rangeDamage);
-                console.log("player health: " + player.health);
-            } else {
-                console.log("blocked!");
-            }
-        }
-
-        if (player.isBlocking) {
-            player.switchSprites("block");
-        }
-
-        if (enemy.isBlocking) {
-            enemy.switchSprites("block");
-        }
-
-        //Update the energy and health displays
-        playerEnergyDisplay.style.width = player.energy + "%";
-        enemyEnergyDisplay.style.width = enemy.energy + "%";
-        playerHealthDisplay.style.width = player.health + "%";
-        enemyHealthDisplay.style.width = enemy.health + "%";
-
-        //End game when health of one of the players reaches 0
-        if (player.health <= 0 || enemy.health <= 0) {
-            whoWins({ player, enemy, timerId });
-        }
+    //End game when health of one of the players reaches 0
+    if (player.health <= 0 || enemy.health <= 0) {
+        whoWins({ player, enemy, timerId });
     }
 }
 
@@ -475,55 +472,59 @@ animate();
 //Check for keypresses and enable movement and attacks
 window.addEventListener("keydown", (event) => {
     //Player keys
-    switch (event.key) {
-        case "d":
-            keys.d.pressed = true;
-            player.lastKey = "d";
-            break;
-        case "a":
-            keys.a.pressed = true;
-            player.lastKey = "a";
-            break;
-        case "w":
-            player.jump();
-            break;
-        case "j":
-            player.attack();
-            break;
-        case "k":
-            player.attackRange();
-            break;
-        case "l":
-            player.block();
-            break;
+    if (!player.dead) {
+        switch (event.key) {
+            case "d":
+                keys.d.pressed = true;
+                player.lastKey = "d";
+                break;
+            case "a":
+                keys.a.pressed = true;
+                player.lastKey = "a";
+                break;
+            case "w":
+                player.jump();
+                break;
+            case "j":
+                player.attack();
+                break;
+            case "k":
+                player.attackRange();
+                break;
+            case "l":
+                player.block();
+                break;
+        }
     }
 
-    //Enemy keys
-    switch (event.key) {
-        case "ArrowLeft":
-            keys.ArrowLeft.pressed = true;
-            enemy.lastKey = "ArrowLeft";
-            break;
-        case "ArrowRight":
-            keys.ArrowRight.pressed = true;
-            enemy.lastKey = "ArrowRight";
-            break;
-        case "ArrowUp":
-            enemy.jump();
-            break;
-    }
+    if (!enemy.dead) {
+        //Enemy keys
+        switch (event.key) {
+            case "ArrowLeft":
+                keys.ArrowLeft.pressed = true;
+                enemy.lastKey = "ArrowLeft";
+                break;
+            case "ArrowRight":
+                keys.ArrowRight.pressed = true;
+                enemy.lastKey = "ArrowRight";
+                break;
+            case "ArrowUp":
+                enemy.jump();
+                break;
+        }
 
-    //Enemy attacks are on numpad so it should use code so it can be used with or without numlock
-    switch (event.code) {
-        case "Numpad1":
-            enemy.attack();
-            break;
-        case "Numpad2":
-            enemy.attackRange();
-            break;
-        case "Numpad3":
-            enemy.block();
-            break;
+        //Enemy attacks are on numpad so it should use event.code instead of event.key so it can be used with or without numlock enabled
+        switch (event.code) {
+            case "Numpad1":
+                enemy.attack();
+                break;
+            case "Numpad2":
+                enemy.attackRange();
+                break;
+            case "Numpad3":
+                enemy.block();
+                break;
+        }
     }
 });
 
