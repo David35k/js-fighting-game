@@ -1,22 +1,24 @@
 * {
     box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
 }
 
-.playerHealth {
-    background-color: yellow;
-    height: 25px;
-    width: 100%;
+body {
+    display: flex;
+    justify-content: center;
 }
 
 .timer {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: red;
+    background-color: black;
     width: 100px;
-    height: 100px;
+    height: 75px;
     flex-shrink: 0;
-    font-size: 40px;
+    font-size: 20px;
+    color: white;
+    border: 3px solid white;
 }
 
 .healthParent {
@@ -25,7 +27,9 @@
     position: relative;
     height: 100%;
     width: 100%;
-    padding-bottom: 10px;
+    border-top: 3px solid white;
+    border-bottom: 3px solid white;
+    border-right: 3px solid white;
 }
 
 .healthParentPlayer {
@@ -34,7 +38,9 @@
     position: relative;
     height: 100%;
     width: 100%;
-    padding-bottom: 10px;
+    border-left: 3px solid white;
+    border-top: 3px solid white;
+    border-bottom: 3px solid white;
 }
 
 .energyParentPlayer {
@@ -42,6 +48,8 @@
     position: relative;
     height: 100%;
     width: 50%;
+    border-left: 3px solid white;
+    border-bottom: 3px solid white;
 }
 
 .energyParent {
@@ -50,10 +58,22 @@
     position: relative;
     height: 100%;
     width: 50%;
+    border-right: 3px solid white;
+    border-bottom: 3px solid white;
 }
 
 .health {
-    background-color: blue;
+    background-color: #818cf8;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 25px;
+
+}
+
+.energy {
+    background-color: #8b5cf6;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -62,7 +82,17 @@
 }
 
 .healthPlayer {
-    background-color: blue;
+    background-color: #818cf8;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 25px;
+}
+
+.energyPlayer {
+    background-color: #8b5cf6;
     position: absolute;
     top: 0;
     right: 0;
@@ -72,25 +102,25 @@
 }
 
 .healthBg {
-    background-color: yellow;
+    background-color: #ef4444;
     height: 25px;
     width: 100%;
 }
 
 .energyBg {
-    background-color: purple;
+    background-color: #60a5fa;
     height: 25px;
     width: 100%;
 }
 
 .healthBgPlayer {
-    background-color: yellow;
+    background-color: #ef4444;
     height: 25px;
     width: 100%;
 }
 
 .energyBgPlayer {
-    background-color: purple;
+    background-color: #60a5fa;
     height: 25px;
     width: 100%;
 }
@@ -135,7 +165,7 @@ canvas {
     justify-content: center;
     flex-direction: column;
     position: relative;
-    height: 40px;
+    height: 50px;
     width: 100%;
 }
 

@@ -158,8 +158,10 @@ class Fighter extends Sprite {
         //This is used to draw the hitboxes
 
         //Range attack
-        c.fillStyle = "orange";
-        c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        if (this.isAttackingRange) {
+            c.fillStyle = "orange";
+            c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        }
 
         //Player hitboxes
         // c.fillStyle = "green";
@@ -487,13 +489,15 @@ class Fighter extends Sprite {
     }
 
     takeHit(amount) {
-        this.health -= amount;
+        if (!gameOver) {
+            this.health -= amount;
 
-        if (this.health <= 0) {
-            this.health = 0;
-            this.switchSprites("death");
-        } else {
-            this.switchSprites("takeHit");
+            if (this.health <= 0) {
+                this.health = 0;
+                this.switchSprites("death");
+            } else {
+                this.switchSprites("takeHit");
+            }
         }
     }
 }
