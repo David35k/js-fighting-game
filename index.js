@@ -456,11 +456,18 @@ function animate() {
         enemy.switchSprites("block");
     }
 
-    //Update the energy and health displays
-    playerEnergyDisplay.style.width = player.energy + "%";
-    enemyEnergyDisplay.style.width = enemy.energy + "%";
-    playerHealthDisplay.style.width = player.health + "%";
-    enemyHealthDisplay.style.width = enemy.health + "%";
+    gsap.to(playerHealthDisplay, {
+        width: player.health + "%"
+    })
+    gsap.to(enemyHealthDisplay, {
+        width: enemy.health + "%"
+    })
+    gsap.to(playerEnergyDisplay, {
+        width: player.energy + "%"
+    })
+    gsap.to(enemyEnergyDisplay, {
+        width: enemy.energy + "%"
+    })
 
     //End game when health of one of the players reaches 0
     if (player.health <= 0 || enemy.health <= 0) {
