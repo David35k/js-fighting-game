@@ -378,9 +378,6 @@ function animate() {
         player.isAttackingRange = false;
         if (!isBlocked(player, player)) {
             player.takeHit(player.rangeDamage);
-            console.log("player health: " + player.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
@@ -389,10 +386,6 @@ function animate() {
         enemy.isAttackingRange = false;
         if (!isBlocked(enemy, enemy)) {
             enemy.takeHit(enemy.rangeDamage);
-            enemyHealthDisplay.style.width = enemy.health + "%";
-            console.log("enemy health: " + enemy.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
@@ -403,9 +396,6 @@ function animate() {
         player.isAttacking = false;
         if (!isBlocked(player, enemy)) {
             enemy.takeHit(player.damage);
-            console.log("enemy health: " + enemy.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
@@ -416,9 +406,6 @@ function animate() {
         player.isAttackingRange = false;
         if (!isBlocked(player, enemy)) {
             enemy.takeHit(player.rangeDamage);
-            console.log("enemy health: " + enemy.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
@@ -429,9 +416,6 @@ function animate() {
         enemy.isAttacking = false;
         if (!isBlocked(enemy, player)) {
             player.takeHit(enemy.damage);
-            console.log("player health: " + player.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
@@ -442,9 +426,6 @@ function animate() {
         enemy.isAttackingRange = false;
         if (!isBlocked(enemy, player)) {
             player.takeHit(enemy.rangeDamage);
-            console.log("player health: " + player.health);
-        } else {
-            console.log("blocked!");
         }
     }
 
