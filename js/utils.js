@@ -37,12 +37,29 @@ function attackCollision({ rectangle1, rectangle2 }, type) {
 
 //A function that will detect whether there has been a deflection
 function isDeflected({ rectangle1, rectangle2 }) {
-    return (
+    if (
         rectangle1.attackBoxRange.position.x + rectangle1.attackBoxRange.size >= rectangle2.attackBox.position.x &&
         rectangle1.attackBoxRange.position.x <= rectangle2.attackBox.position.x + rectangle2.attackBox.width &&
         rectangle1.attackBoxRange.position.y + rectangle1.attackBoxRange.size >= rectangle2.attackBox.position.y &&
         rectangle1.attackBoxRange.position.y <= rectangle2.attackBox.position.y + rectangle2.attackBox.height
-    );
+    ) {
+        if (rectangle1.projectileDirection === "right") {
+            rectangle1.projectileDirection = "left";
+        } else {
+            rectangle1.projectileDirection = "right";
+        }
+        return true;
+    }
+}
+
+//Function that checks whether an attack got blocked or not
+function isBlocked(attacker, blocker) {
+    if (attacker.shootDirection == "right" && blocker.shootDirection == "right" && blocker.isBlocking ||
+        attacker.shootDirection == "left" && blocker.shootDirection == "left" && blocker.isBlocking) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 //This is for changing the css variables depending on the background
@@ -52,13 +69,13 @@ var r = document.querySelector(':root');
 
 // Create a function for getting a variable value
 function cssGetVar(variable) {
-  // Get the styles (properties and values) for the root
-  var rs = getComputedStyle(r);
-  //Log the value of the variable
-  console.log("The value of the variable is: " + rs.getPropertyValue(variable));
+    // Get the styles (properties and values) for the root
+    var rs = getComputedStyle(r);
+    //Log the value of the variable
+    console.log("The value of the variable is: " + rs.getPropertyValue(variable));
 }
 
 // Create a function for setting a variable value
 function cssSetVar(variable, value) {
-  r.style.setProperty(variable, value);
+    r.style.setProperty(variable, value);
 }

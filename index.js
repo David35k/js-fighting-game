@@ -30,7 +30,7 @@ const gameEndText = document.querySelector("#gameEndText");
 //Variable that controls whether the game is over or not
 let gameOver = false;
 
-let place = "city";
+let place = "forest";
 
 let cityMusic = new Audio("./assets/music/cyberpunk-street.mp3");
 
@@ -163,11 +163,11 @@ const player = new Fighter({
             framesMax: 4
         },
         blockLeft: {
-            imageSrc: "./assets/dojaCat/Block.png",
+            imageSrc: "./assets/dojaCat/BlockFlipped.png",
             framesMax: 3
         },
         takeHitLeft: {
-            imageSrc: "./assets/dojaCat/Take hit.png",
+            imageSrc: "./assets/dojaCat/Take hitFlipped.png",
             framesMax: 3
         },
         deathLeft: {
@@ -291,13 +291,28 @@ const playerRangeAttack = new Sprite({
         x: player.attackBoxRange.position.x,
         y: player.attackBoxRange.position.y
     },
-    imageSrc: "./assets/effects/2/spritesheet.png",
-    scale: 3,
-    framesMax: 30,
-    framesHold: 5,
+    imageSrc: "./assets/effects/white.png",
+    scale: 2,
+    framesMax: 60,
+    framesHold: 1,
     offset: {
-        x: 25,
-        y: 25
+        x: 100,
+        y: 75
+    }
+})
+
+const enemyRangeAttack = new Sprite({
+    position: {
+        x: player.attackBoxRange.position.x,
+        y: player.attackBoxRange.position.y
+    },
+    imageSrc: "./assets/effects/blue.png",
+    scale: 2,
+    framesMax: 60,
+    framesHold: 1,
+    offset: {
+        x: 100,
+        y: 75
     }
 })
 
@@ -316,16 +331,6 @@ const keys = {
         pressed: false
     }
 };
-
-//Function that checks whether an attack got blocked or not
-function isBlocked(attacker, blocker) {
-    if (attacker.shootDirection == "right" && blocker.shootDirection == "right" && blocker.isBlocking ||
-        attacker.shootDirection == "left" && blocker.shootDirection == "left" && blocker.isBlocking) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 //A function that checks which player won the game
 function whoWins({ player, enemy, timerId }) {
@@ -354,16 +359,40 @@ function animate() {
     if (place === "forest") {
         background.update();
         shop.update();
+        c.fillStyle = "rgba(255, 255, 255, 0.1)";
     } else if (place === "city") {
         backgroundCity.update();
+        c.fillStyle = "rgba(255, 255, 255, 0.15)";
     }
-    c.fillStyle = "rgba(255, 255, 255, 0.1)";
     c.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
     enemy.update();
+
+    if (player.projectileDirection === "right") {
+        playerRangeAttack.offset.x = 100;
+        playerRangeAttack.image.src = "./assets/effects/whiteFlipped.png";
+    } else if (player.projectileDirection === "left") {
+        playerRangeAttack.offset.x = 50;
+        playerRangeAttack.image.src = "./assets/effects/white.png";
+    }
+
+    if (enemy.projectileDirection === "right") {
+        enemyRangeAttack.offset.x = 100;
+        enemyRangeAttack.image.src = "./assets/effects/blueFlipped.png";
+    } else if (enemy.projectileDirection === "left") {
+        enemyRangeAttack.offset.x = 50;
+        enemyRangeAttack.image.src = "./assets/effects/blue.png";
+    }
+
     playerRangeAttack.position = player.attackBoxRange.position;
+    enemyRangeAttack.position = enemy.attackBoxRange.position;
+
     if (player.isAttackingRange) {
         playerRangeAttack.update();
+    }
+
+    if (enemy.isAttackingRange) {
+        enemyRangeAttack.update();
     }
 
     //Reset x velocity

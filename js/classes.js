@@ -113,6 +113,7 @@ class Fighter extends Sprite {
         this.isBlocking = false;
         this.blockDirection = "";
         this.shootDirection = "";
+        this.projectileDirection = "";
         this.direction = direction;
         this.frameCurrent = 0;
         this.framesElapsed = 0;
@@ -430,6 +431,7 @@ class Fighter extends Sprite {
     //Enables the players to do a long range attack
     attackRange() {
         if (!this.isAttackingRange && !this.rangeAttackRecharge && this.energy >= 30 && !this.isBlocking) {
+            this.projectileDirection = this.direction;
             this.isAttackingRange = true;
             this.rangeAttackRecharge = true;
             this.energy -= 30;
