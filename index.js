@@ -30,13 +30,40 @@ const gameEndText = document.querySelector("#gameEndText");
 //Variable that controls whether the game is over or not
 let gameOver = false;
 
-//Background sprite
+let place = "city";
+
+let cityMusic = new Audio("./assets/music/cyberpunk-street.mp3");
+
+if (place === "forest") {
+    cssSetVar("--health-bg-color", "#ef4444");
+    cssSetVar("--energy-bg-color", "#60a5fa");
+    cssSetVar("--health-color", "#818cf8");
+    cssSetVar("--energy-color", "#8b5cf6");
+} else if (place === "city") {
+    //cityMusic.play();
+    cssSetVar("--health-bg-color", "#ef4444");
+    cssSetVar("--energy-bg-color", "#60a5fa");
+    cssSetVar("--health-color", "#F6AA3E");
+    cssSetVar("--energy-color", "#F4792F");
+
+}
+
+//Background sprites
 const background = new Sprite({
     position: {
         x: 0,
         y: 0
     },
     imageSrc: "./assets/background.png"
+})
+
+const backgroundCity = new Sprite({
+    position: {
+        x: 0,
+        y: -100
+    },
+    imageSrc: "./assets/cyberpunk-street-files/PNG/cyberpunk-street.png",
+    scale: 3.5
 })
 
 //Shop sprite
@@ -259,6 +286,21 @@ const enemy = new Fighter({
     rangeCooldown: 1500
 });
 
+const playerRangeAttack = new Sprite({
+    position: {
+        x: player.attackBoxRange.position.x,
+        y: player.attackBoxRange.position.y
+    },
+    imageSrc: "./assets/effects/2/spritesheet.png",
+    scale: 3,
+    framesMax: 30,
+    framesHold: 5,
+    offset: {
+        x: 25,
+        y: 25
+    }
+})
+
 //The keys used for horizontal movement
 const keys = {
     a: {
@@ -309,12 +351,20 @@ function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = "black";
     c.fillRect(0, 0, canvas.width, canvas.height);
-    background.update();
-    shop.update();
+    if (place === "forest") {
+        background.update();
+        shop.update();
+    } else if (place === "city") {
+        backgroundCity.update();
+    }
     c.fillStyle = "rgba(255, 255, 255, 0.1)";
     c.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
     enemy.update();
+    playerRangeAttack.position = player.attackBoxRange.position;
+    if (player.isAttackingRange) {
+        playerRangeAttack.update();
+    }
 
     //Reset x velocity
     player.velocity.x = 0;

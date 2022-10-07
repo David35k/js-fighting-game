@@ -1,6 +1,6 @@
 //The sprite class for making sprites easily
 class Sprite {
-    constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
+    constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 }, framesHold = 10 }) {
         this.position = position;
         this.height = 150;
         this.width = 50;
@@ -10,7 +10,7 @@ class Sprite {
         this.framesMax = framesMax;
         this.frameCurrent = 0;
         this.framesElapsed = 0;
-        this.framesHold = 10;
+        this.framesHold = framesHold;
         this.offset = offset;
     }
 
@@ -158,10 +158,10 @@ class Fighter extends Sprite {
         //This is used to draw the hitboxes
 
         //Range attack
-        if (this.isAttackingRange) {
-            c.fillStyle = "orange";
-            c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
-        }
+        // if (this.isAttackingRange) {
+        //     c.fillStyle = "orange";
+        //     c.fillRect(this.attackBoxRange.position.x, this.attackBoxRange.position.y, this.attackBoxRange.size, this.attackBoxRange.size);
+        // }
 
         //Player hitboxes
         // c.fillStyle = "green";

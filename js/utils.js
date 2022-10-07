@@ -44,3 +44,21 @@ function isDeflected({ rectangle1, rectangle2 }) {
         rectangle1.attackBoxRange.position.y <= rectangle2.attackBox.position.y + rectangle2.attackBox.height
     );
 }
+
+//This is for changing the css variables depending on the background
+
+// Get the root element
+var r = document.querySelector(':root');
+
+// Create a function for getting a variable value
+function cssGetVar(variable) {
+  // Get the styles (properties and values) for the root
+  var rs = getComputedStyle(r);
+  //Log the value of the variable
+  console.log("The value of the variable is: " + rs.getPropertyValue(variable));
+}
+
+// Create a function for setting a variable value
+function cssSetVar(variable, value) {
+  r.style.setProperty(variable, value);
+}

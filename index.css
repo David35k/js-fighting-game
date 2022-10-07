@@ -1,6 +1,10 @@
 * {
     box-sizing: border-box;
     font-family: 'Press Start 2P', cursive;
+    /* --health-bg-color: #ef4444;
+    --energy-bg-color: #60a5fa;
+    --health-color: #818cf8;
+    --energy-color: #8b5cf6; */
 }
 
 body {
@@ -63,7 +67,7 @@ body {
 }
 
 .health {
-    background-color: #818cf8;
+    background-color: var(--health-color);
     position: absolute;
     top: 0;
     bottom: 0;
@@ -73,7 +77,7 @@ body {
 }
 
 .energy {
-    background-color: #8b5cf6;
+    background-color: var(--energy-color);
     position: absolute;
     top: 0;
     bottom: 0;
@@ -82,7 +86,7 @@ body {
 }
 
 .healthPlayer {
-    background-color: #818cf8;
+    background-color: var(--health-color);
     position: absolute;
     top: 0;
     right: 0;
@@ -92,7 +96,7 @@ body {
 }
 
 .energyPlayer {
-    background-color: #8b5cf6;
+    background-color: var(--energy-color);
     position: absolute;
     top: 0;
     right: 0;
@@ -102,25 +106,25 @@ body {
 }
 
 .healthBg {
-    background-color: #ef4444;
+    background-color: var(--health-bg-color);
     height: 25px;
     width: 100%;
 }
 
 .energyBg {
-    background-color: #60a5fa;
+    background-color: var(--energy-bg-color);
     height: 25px;
     width: 100%;
 }
 
 .healthBgPlayer {
-    background-color: #ef4444;
+    background-color: var(--health-bg-color);
     height: 25px;
     width: 100%;
 }
 
 .energyBgPlayer {
-    background-color: #60a5fa;
+    background-color: var(--energy-bg-color);
     height: 25px;
     width: 100%;
 }
