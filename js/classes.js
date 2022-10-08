@@ -312,6 +312,14 @@ class Fighter extends Sprite {
                         break;
                     case "death":
                         if (this.image !== this.sprites.death.image) {
+                            if (this === player) {
+                                this.scale = 3;
+                                this.offset = {
+                                    x: 100,
+                                    y: 100
+                                }
+                                this.framesHold = 2;
+                            }
                             this.image = this.sprites.death.image;
                             this.framesMax = this.sprites.death.framesMax;
                             this.frameCurrent = 0;
@@ -329,6 +337,14 @@ class Fighter extends Sprite {
                         break;
                     case "death":
                         if (this.image !== this.sprites.death.image) {
+                            if (this === player) {
+                                this.scale = 3;
+                                this.offset = {
+                                    x: 100,
+                                    y: 100
+                                }
+                                this.framesHold = 2;
+                            }
                             this.image = this.sprites.death.image;
                             this.framesMax = this.sprites.death.framesMax;
                             this.frameCurrent = 0;
@@ -392,6 +408,14 @@ class Fighter extends Sprite {
                         break;
                     case "death":
                         if (this.image !== this.sprites.deathLeft.image) {
+                            if (this === player) {
+                                this.scale = 3;
+                                this.offset = {
+                                    x: 100,
+                                    y: 100
+                                }
+                                this.framesHold = 2;
+                            }
                             this.image = this.sprites.deathLeft.image;
                             this.framesMax = this.sprites.deathLeft.framesMax;
                             this.frameCurrent = 0;
@@ -409,6 +433,14 @@ class Fighter extends Sprite {
                         break;
                     case "death":
                         if (this.image !== this.sprites.deathLeft.image) {
+                            if (this === player) {
+                                this.scale = 3;
+                                this.offset = {
+                                    x: 100,
+                                    y: 100
+                                }
+                                this.framesHold = 2;
+                            }
                             this.image = this.sprites.deathLeft.image;
                             this.framesMax = this.sprites.deathLeft.framesMax;
                             this.frameCurrent = 0;

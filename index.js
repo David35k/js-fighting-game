@@ -133,8 +133,8 @@ const player = new Fighter({
             framesMax: 3
         },
         death: {
-            imageSrc: "./assets/dojaCat/Fall.png",
-            framesMax: 3
+            imageSrc: "./assets/effects/explosion/spritesheet.png",
+            framesMax: 50
         },
 
         //Left
@@ -171,8 +171,8 @@ const player = new Fighter({
             framesMax: 3
         },
         deathLeft: {
-            imageSrc: "./assets/dojaCat/FallFlipped.png",
-            framesMax: 3
+            imageSrc: "./assets/effects/explosion/spritesheet.png",
+            framesMax: 50
         },
     },
     rangeDamage: 30,
@@ -541,7 +541,7 @@ animate();
 //Check for keypresses and enable movement and attacks
 window.addEventListener("keydown", (event) => {
     //Player keys
-    if (!player.dead) {
+    if (player.health > 0) {
         switch (event.key) {
             case "d":
                 keys.d.pressed = true;
@@ -566,7 +566,7 @@ window.addEventListener("keydown", (event) => {
         }
     }
 
-    if (!enemy.dead) {
+    if (enemy.health > 0) {
         //Enemy keys
         switch (event.key) {
             case "ArrowLeft":
